@@ -30,6 +30,11 @@ var STATE_PARKED_AUTOTIMER    	       =  7;
 var STATE_COMPLETED_CUTTING_TODAY_AUTO =  8; 
 var STATE_OK_CUTTING_NOT_AUTO          =  9;
 var STATE_OFF_HATCH_OPEN               = 10; 
+var STATE_OFF_HATCH_CLOSED             = 11;
+var STATE_ERROR                        = 12;
+var STATE_EXECUTING_PARK               = 13;
+var STATE_EXECUTING_START              = 14;
+var STATE_EXECUTING_STOP               = 15;
 
 // Variables partagées
 var mower_dtlog = [];
@@ -39,6 +44,9 @@ var map_b_lat;
 var map_r_lon;
 var map_width;
 var map_height;
+
+var errors_nb = 0;
+var errors_pos = [];
 
 // Fonctions realisées au chargement de la page: charger les données sur la période par défaut,
 // et afficher les infos correspondantes
@@ -94,8 +102,8 @@ function loadData(){
             map_width = Math.round((map_wd*map_pr)/100);
             map_height = Math.round((map_he*map_pr)/100);
             // Trace les positions sur la carte
-            draw_lines(rb_get_mode_value());
             stat_usage ();
+            draw_lines(rb_get_mode_value());
             
         }
     });
@@ -188,6 +196,28 @@ function draw_lines(mode_value) {
       ctx.stroke();      
     }
 
+    // Affichage d'une croix magenta autour des positions au une erreur est survenue
+    if (errors_nb > 0) {
+      for (i=0; i<errors_nb; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'magenta';
+        ctx.globalAlpha = 1.0;
+        ctx.lineWidth = 4;
+        ctx.setLineDash([]);
+        // calcul de la position du point sur la carte
+        tmp = errors_pos[i].split(',');
+        dtlog_lat = tmp[0];
+        dtlog_lon = tmp[1];
+        //alert("draw_lines:errors_pos="+dtlog_lat + '/' + dtlog_lon);
+        xpos = Math.round(map_width  * (dtlog_lon-map_l_lon) / lon_width);
+        ypos = Math.round(map_height * (dtlog_lat-map_t_lat) / lat_height);
+        ctx.moveTo(xpos-12,ypos-12);
+        ctx.lineTo(xpos+12,ypos+12);
+        ctx.moveTo(xpos-12,ypos+12);
+        ctx.lineTo(xpos+12,ypos-12);
+        ctx.stroke();
+      }
+    }
 }
 
 
@@ -210,6 +240,7 @@ function stat_usage () {
   var duration_leaving = 0;
   var nb_consecutive_cycle_charging = 0;
   var nb_consecutive_cycle_cutting = 0;
+  var prev_error = 0;
   
   var nb_pts = mower_dtlog.length;
   if (nb_pts <1) {
@@ -218,6 +249,8 @@ function stat_usage () {
     return;
   }
   // analyse des données
+  errors_nb = 0;
+  errors_pos = [];
   tmp = mower_dtlog[0].split(',');
   prev_ts = tmp[0];  // time stamp
   prev_st = tmp[1];  // state
@@ -233,7 +266,11 @@ function stat_usage () {
       duration_searching += cur_ts - prev_ts;
     if (cur_st == STATE_OK_LEAVING)
       duration_leaving += cur_ts - prev_ts;
-
+    if ((cur_st == STATE_ERROR)&&(prev_error == 0)) {
+      errors_pos[errors_nb] = tmp[2]+','+tmp[3];  // store Lat + Lon      
+      errors_nb += 1;
+    }
+    prev_error = (cur_st == STATE_ERROR)?1:0;
     if ((cur_st == STATE_OK_CHARGING)&&(prev_st == STATE_OK_CHARGING))
       nb_consecutive_cycle_charging += 1;
     else {
@@ -264,6 +301,10 @@ function stat_usage () {
   $("#div_hist_usage").append("Nombre de cycle de coupe: "+nb_cycle_cutting+"<br>");
   $("#div_hist_usage").append("Durée moyenne des cycles de recharge: "+((nb_cycle_charging==0)?"--":Math.round(charging_mean_duration/60))+" mn<br>");
   $("#div_hist_usage").append("Durée moyenne des cycles de coupe: "+((nb_cycle_cutting==0)?"--":Math.round(cutting_mean_duration/60))+" mn<br><br>");
+  if (errors_nb == 0)
+    $("#div_hist_usage").append("<p style='color:#00FF00';><B><I>Pas d'erreur sur la période</B></I></p><br>");
+  else
+    $("#div_hist_usage").append("<p style='color:#FF0000';><B><I>Nombre d'erreur sur la période: "+errors_nb+"</B></I></p><br>");
   $("#div_hist_usage").append("(Nombre de points utilisés pour les statistiques: "+nb_pts+")<br>");
   
 }

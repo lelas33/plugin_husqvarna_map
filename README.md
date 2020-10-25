@@ -18,7 +18,7 @@ Les fonctions ajoutées au plugin actuel sont:
 </p>
 
 ## Versions
-* Tag husqmap_v1.0: (25/10/2020) Version originale de ce plugin, après changement de nom et changement de la documentation pour l'installation
+* Tag husqmap_v1.0: (25/10/2020) Version originale de ce plugin, après changement de nom du plugin et changement de la documentation pour l'installation. Affichage des erreurs Robots dans le panel.
 
 ## Installation
 Par source Github:
