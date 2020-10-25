@@ -18,7 +18,7 @@ Les fonctions ajoutées au plugin actuel sont:
 </p>
 
 ## Versions
-* Tag husqmap_v1.0: Version 25/10/2020: Version originale de ce plugin, après changement de nom. Ajout de la documentation, finalisation de la planification, et simplification de l'installation
+* Tag husqmap_v1.0: (25/10/2020) Version originale de ce plugin, après changement de nom et changement de la documentation pour l'installation
 
 ## Installation
 Par source Github:
@@ -26,10 +26,10 @@ Par source Github:
 * Sélectionner le symbole + (Ajouter un plugin)
 * Sélectionner le type de source Github (Il faut l'avoir autorisé au préalable dans le menu Réglages / Système / Configuration => Mise à jour/Market)
 * Remplir les champs:
-  * ID logique du plugin : husqvarna_map
-  * Utilisateur ou organisation du dépôt : lelas33
-  * Nom du dépôt : plugin_husqvarna_map
-  * Branche : master
+  * ID logique du plugin : **husqvarna_map**
+  * Utilisateur ou organisation du dépôt : **lelas33**
+  * Nom du dépôt : **plugin_husqvarna_map**
+  * Branche : **master**
 * Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour installer le nouveau plugin.
 Sur la page configuration du plugin, saisissez vos identifiant de compte Husqvarna, et cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 
