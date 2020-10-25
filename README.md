@@ -20,7 +20,7 @@ Les fonctions ajoutées au plugin actuel sont:
 ## Versions
 * Tag husqmap_v1.0: (25/10/2020) Version originale de ce plugin, après changement de nom du plugin et changement de la documentation pour l'installation. Affichage des erreurs Robots dans le panel.
 
-## Installation
+## Installation du plugin
 Par source Github:
 * Aller dans Jeedom menu Plugins / Gestion des plugins
 * Sélectionner le symbole + (Ajouter un plugin)
@@ -34,13 +34,19 @@ Par source Github:
 * Rafraichir la page: Le plugin "husqvarna_map" doit apparaitre. Sélectionner son symbole pour aller dans sa page de configuration.
 * Sur la page de configuration du plugin:
   * Activer le plugin
-  * Saisissez vos identifiant de compte Husqvarna
-  * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
-* Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour installer le nouveau plugin.
+  * Saisissez vos identifiant de compte Husqvarna. Puis Sauvegarder
+  * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement. Puis Sauvegarder
 
-## Configuration
-Une fois l'installation effectuée, lancer la détection de votre robot, ce qui crée l'équipement correspondant.
-* Sur l'onglet "**Equipement**", choisissez l'objet parent
+## Préparation pour le Widget
+Le widget sera configuré automatiquement par le plugin lors de la création de l'équipement. Toutefois, il faut réaliser "à la main" les opérations complémentaires suivantes pour que la création soit complète:
+* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna_map\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget. (Par exemple avec le plugin JeeXplorer)
+* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna_map\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
+(Télécharger ce fichier json également avec JeeXplorer, et pointer ce fichier lors de l'importation)
+
+## Création de l'équiment (de votre tondeuse)
+Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour créer votre équipement.
+Lancer la détection de votre robot, ce qui crée l'équipement correspondant automatiquement.
+* Puis, sur l'onglet "**Equipement**", choisissez l'objet parent
 * Sur l'onglet "**Config.Carte**", vous pouvez définir l'image qui sera utilisée par le plugin pour l'utilisation de la position GPS de votre robot.
 Comme indiqué sur cette page, il faut générer une image au format "png", de taille environ 500 x 500 pixels, qui représente votre terrain et qui soit géo-référencée. Le plus simple pour cela est d'utiliser Google map en mode satellite. (Vous faite une copie d'écran, en notant bien les coordonnées GPS des 2 coins supérieur/gauche et inférieur/droit, sous la forme latitude,longitude (exemple:48.858748, 2.293794)
 (Attention, cette carte doit être orientée Nord en haut.)
@@ -94,11 +100,7 @@ Il faut donc que les plages de fonctionnements du robot incluent celle du plugin
 (Une façon simple de faire est de configurer le robot en H24, 7j/7, et c'est dans ce cas la planification du plugin qui est 
 prise en compte)
 
-## Widget
-Le widget est configuré automatiquement par le plugin lors de la création de l'équipement. Toutefois, il faut réaliser "à la main" les opérations complémentaires suivantes:
-* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna_map\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget. (Par exemple avec le plugin JeeXplorer)
-* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna_map\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
-(Télécharger le fichier ce fichier json également avec JeeXplorer, et pointer ce fichier lors de l'importation)
+## Finalisation du Widget
 * Organiser les infos et commandes du plugins sur le dashboard jeedom (par exemple comme dans l'image plus haut)
 
 ## Panel
