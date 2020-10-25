@@ -30,8 +30,13 @@ Par source Github:
   * Utilisateur ou organisation du dépôt : **lelas33**
   * Nom du dépôt : **plugin_husqvarna_map**
   * Branche : **master**
+  * => Puis valider par le bouton "Enregister"
+* Rafraichir la page: Le plugin "husqvarna_map" doit apparaitre. Sélectionner son symbole pour aller dans sa page de configuration.
+* Sur la page de configuration du plugin:
+  * Activer le plugin
+  * Saisissez vos identifiant de compte Husqvarna
+  * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 * Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour installer le nouveau plugin.
-Sur la page configuration du plugin, saisissez vos identifiant de compte Husqvarna, et cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 
 ## Configuration
 Une fois l'installation effectuée, lancer la détection de votre robot, ce qui crée l'équipement correspondant.
@@ -91,8 +96,9 @@ prise en compte)
 
 ## Widget
 Le widget est configuré automatiquement par le plugin lors de la création de l'équipement. Toutefois, il faut réaliser "à la main" les opérations complémentaires suivantes:
-* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget.
-* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
+* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna_map\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget. (Par exemple avec le plugin JeeXplorer)
+* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna_map\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
+(Télécharger le fichier ce fichier json également avec JeeXplorer, et pointer ce fichier lors de l'importation)
 * Organiser les infos et commandes du plugins sur le dashboard jeedom (par exemple comme dans l'image plus haut)
 
 ## Panel
