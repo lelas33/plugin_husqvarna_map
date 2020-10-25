@@ -39,9 +39,9 @@ const METEO_SEUIL_PLUIE_DEPART = 18;  // non départ du robot si pluie > à ce s
 class husqvarna_map extends eqLogic {
     /*     * *************************Attributs****************************** */
     /*     * ***********************Methode static*************************** */
-    public static function postConfig_password() {
-        husqvarna_map::force_detect_movers();
-    }
+    //public static function postConfig_password() {
+    //    husqvarna_map::force_detect_movers();
+    //}
 
     public static function force_detect_movers() {
         // Initialisation de la connexion
