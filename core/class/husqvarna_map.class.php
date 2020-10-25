@@ -135,6 +135,10 @@ class husqvarna_map extends eqLogic {
                 if (strpos($id, '_en')!== false) {
                   $cmd->setDisplay('parameters', array("type"=>"mode","largeurDesktop"=>"60","largeurMobile"=>"30"));
                 }
+                // historic
+                if (in_array($id, array("batteryPercent", "lastErrorCode", "connected"))) {
+                  $cmd->setIsHistorized(1);
+                }
                 $cmd->save();
             }
             else
