@@ -1,0 +1,59 @@
+<div style="min-height:200px;min-width:200px;" id="husqvarna_map_map" class="cmd cmd-widget #history# tooltips" data-type="info" data-subtype="string" data-cmd_id="#id#"  data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+    <canvas class="myCanvas" width="400" height="400" style="no-repeat center center;border:5px solid #000000;">
+    </canvas>
+  <script>
+    jeedom.cmd.update['#id#'] = function(_options) { 
+        $('.cmd[data-cmd_uid=#uid#]').attr('title','Date de valeur : '+_options.valueDate+'<br/>Date de collecte : '+_options.collectDate);
+        hist = _options.display_value;    
+        list_of_points = hist.split('/');
+        ratios = list_of_points[1].split(',');
+        ratio = parseInt(ratios[1])/100;
+        size = list_of_points[0].split(',');
+        img_wd = Math.round(size[0]*ratio);
+        img_he = Math.round(size[1]*ratio);
+        var canvas = document.querySelector('.myCanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.canvas.width = img_wd;
+        ctx.canvas.height= img_he;
+        ctx.globalAlpha = 1.0;
+        var backgroundImage = new Image(); 
+        backgroundImage.src = 'plugins/husqvarna_map/ressources/maison.png';
+        backgroundImage.onload = function() {
+          ctx.drawImage(backgroundImage, 0, 0, img_wd, img_he);
+          ctx.setLineDash([5,5]);
+          ctx.lineWidth = 2;
+          var i;
+          for (i=0; i<50; i++) {
+            point = list_of_points[i+2].split(',');
+            cx = Math.round(point[0]*ratio);
+            cy = Math.round(point[1]*ratio);
+            if (i==0) {
+              ctx.beginPath();
+              ctx.strokeStyle = 'red';
+              ctx.moveTo(cx,cy);
+              }
+            else {
+              ctx.lineTo(cx,cy);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.globalAlpha = 1.0-(i*0.015);
+              ctx.strokeStyle = 'red';
+              ctx.moveTo(cx,cy);
+              }
+          }
+          // trace cercle autour du point courant
+          ctx.beginPath();
+          ctx.strokeStyle = 'GreenYellow';
+          ctx.globalAlpha = 1.0;
+          ctx.lineWidth = 4;
+          ctx.setLineDash([]);
+          point = list_of_points[2].split(',');
+          cx = Math.round(point[0]*ratio);
+          cy = Math.round(point[1]*ratio);
+          ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+    }
+	jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+  </script>
+</div> 
