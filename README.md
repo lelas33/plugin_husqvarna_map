@@ -18,18 +18,20 @@ Les fonctions ajoutées au plugin actuel sont:
 </p>
 
 ## Versions
-* Tag husq_v1.0: Version originale du 16/5/2020
-* Tag husq_v1.1: Version 21/5/2020.
-* Tag husq_v1.2: Version 24/10/2020: changement de nom du plugin => hasqvarna_map
-Ajout de la documentation, finalisation de la planification, et simplification de l'installation
-
+* Tag husqmap_v1.0: Version 25/10/2020: Version originale de ce plugin, après changement de nom. Ajout de la documentation, finalisation de la planification, et simplification de l'installation
 
 ## Installation
-* Télécharger le plugin depuis Github. Je vous suggère de télécharger les versions avec tags ("husq_vx.y")
-* Si vous avez déjà le plugin husqvarna installé sur votre jeedom, vous pouvez supprimer l'équipement jeedom correspondant, et faire une  sauvegarde par précaution du dossier correspondant dans le répertoire plugin de jeedom.
-* Dézipper la nouvelle version du plugin dans le dossier plugin de jeedom (le même nom husqvarna est utilisé)
-* Aller dans le menu "plugins/objets connectés/Husqvarna" de jeedom pour installer le nouveau plugin.
-Sur la page configuration du plugin, vérifier vos identifiants de login sur les serveurs Husqvarna, et cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
+Par source Github:
+* Aller dans Jeedom menu Plugins / Gestion des plugins
+* Sélectionner le symbole + (Ajouter un plugin)
+* Sélectionner le type de source Github (Il faut l'avoir autorisé au préalable dans le menu Réglages / Système / Configuration => Mise à jour/Market)
+* Remplir les champs:
+  * ID logique du plugin : husqvarna_map
+  * Utilisateur ou organisation du dépôt : lelas33
+  * Nom du dépôt : plugin_husqvarna_map
+  * Branche : master
+* Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour installer le nouveau plugin.
+Sur la page configuration du plugin, saisissez vos identifiant de compte Husqvarna, et cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 
 ## Configuration
 Une fois l'installation effectuée, lancer la détection de votre robot, ce qui crée l'équipement correspondant.
