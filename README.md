@@ -96,8 +96,8 @@ prise en compte)
 
 ## Widget
 Le widget est configuré automatiquement par le plugin lors de la création de l'équipement. Toutefois, il faut réaliser "à la main" les opérations complémentaires suivantes:
-* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget.
-* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
+* Recopier les fichiers depuis le dossier du plugin (plugins\husqvarna_map\ressources\data\img\IconAction) vers le dossier jeedom (data\img\IconAction). Il s'agit d'images de boutons utilisées par le widget.
+* Créer un widget personnalisé nommé IconActionNt en important le fichier "plugins\husqvarna_map\ressources\data\imgIconActionNt.json" dans la fonction "outils/widgets/importer" de jeedom) => Merci à SALVIALF pour ce widget.
 * Organiser les infos et commandes du plugins sur le dashboard jeedom (par exemple comme dans l'image plus haut)
 
 ## Panel
