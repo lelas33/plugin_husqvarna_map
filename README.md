@@ -30,8 +30,13 @@ Par source Github:
   * Utilisateur ou organisation du dépôt : **lelas33**
   * Nom du dépôt : **plugin_husqvarna_map**
   * Branche : **master**
+  * => Puis valider par le bouton "Enregister"
+* Rafraichir la page: Le plugin "husqvarna_map" doit apparaitre. Sélectionner son symbole pour aller dans sa page de configuration.
+* Sur la page de configuration du plugin:
+  * Activer le plugin
+  * Saisissez vos identifiant de compte Husqvarna
+  * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 * Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour installer le nouveau plugin.
-Sur la page configuration du plugin, saisissez vos identifiant de compte Husqvarna, et cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement.
 
 ## Configuration
 Une fois l'installation effectuée, lancer la détection de votre robot, ce qui crée l'équipement correspondant.
