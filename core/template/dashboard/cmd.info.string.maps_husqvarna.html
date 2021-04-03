@@ -2,6 +2,17 @@
     <canvas class="myCanvas" width="400" height="400" style="no-repeat center center;border:5px solid #000000;">
     </canvas>
   <script>
+    $(function() {
+      var c = document.querySelector('.myCanvas');
+      c.addEventListener('click', function(evt) {
+        console.log("Husqvarna_map : click");
+        var urlcourante = document.location.href;
+        urlcourante = urlcourante.replace(/\/$/, "");
+        index_end_root = urlcourante.lastIndexOf( "/" );
+        url_root = urlcourante.substring(0, index_end_root);
+        window.location = url_root+"/index.php?v=d&m=husqvarna_map&p=panel";
+      }, false);
+    });
     jeedom.cmd.update['#id#'] = function(_options) { 
         $('.cmd[data-cmd_uid=#uid#]').attr('title','Date de valeur : '+_options.valueDate+'<br/>Date de collecte : '+_options.collectDate);
         hist = _options.display_value;    

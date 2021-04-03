@@ -21,8 +21,9 @@ define ('STS_UNKNOWN',        99);
 
 class husqvarna_map_api {
 
-	protected $url_api_im = 'https://iam-api.dss.husqvarnagroup.net/api/v3/';
+	protected $url_api_im =    'https://iam-api.dss.husqvarnagroup.net/api/v3/';
 	protected $url_api_track = 'https://amc-api.dss.husqvarnagroup.net/v1/';
+	protected $url_api_app   = 'https://amc-api.dss.husqvarnagroup.net/app/v1/';
 	protected $username;
 	protected $password;
 	protected $token;
@@ -179,6 +180,23 @@ class husqvarna_map_api {
 		return json_decode($json);
 	}
 
+	private function get_api_app($page, $fields = null)
+	{
+		$session = curl_init();
+
+		curl_setopt($session, CURLOPT_URL, $this->url_api_app . $page);
+		curl_setopt($session, CURLOPT_HTTPHEADER, $this->get_headers($fields));
+		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+		if ( isset($fields) )
+		{
+			curl_setopt($session, CURLOPT_POSTFIELDS, json_encode($fields));
+		}
+		$json = curl_exec($session);
+		curl_close($session);
+//		throw new Exception(__('La livebox ne repond pas a la demande de cookie.', __FILE__));
+		return json_decode($json);
+	}
+
 	private function del_api($page)
 	{
 		$session = curl_init();
@@ -231,6 +249,22 @@ class husqvarna_map_api {
 	function get_settings($mover_id)
 	{		
 		return $this->get_api("mowers/".$mover_id."/settings");
+	}
+
+	// get statistics of mower
+	function get_statistics_app($mover_id)
+	{		
+		return $this->get_api_app("mowers/".$mover_id."/statistics");
+	}
+
+	// get timers of mower
+	function get_timers($mover_id)
+	{		
+		return $this->get_api("mowers/".$mover_id."/timers");
+	}
+	function get_timers_app($mover_id)
+	{		
+		return $this->get_api_app("mowers/".$mover_id."/timers");
 	}
 
   // Send a command to mower

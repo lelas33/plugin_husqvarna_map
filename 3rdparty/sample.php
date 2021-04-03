@@ -1,21 +1,39 @@
 <?php
-require_once("husqvarna_api.class.php");
-$account = "xx@yyy.com";
-$passwd = "ABCDEFGH";
-$session_husqvarna = new husqvarna_api();
+require_once("husqvarna_map_api.class.php");
+$account = "laurent.jardin@free.fr";
+$passwd = "etienne_bat";
+$session_husqvarna = new husqvarna_map_api();
 $session_husqvarna->login($account, $passwd);
-print("list_robot :<pre>");
-var_dump($session_husqvarna->list_robots());
-print("</pre>");
-echo "<p>";
-print("control :<pre>");
-var_dump($session_husqvarna->control("1708XXXX-17013YYYY", 'START'));
-print("</pre>");
-print("get_status :<pre>");
-var_dump($session_husqvarna->get_status("1708XXXX-17013YYYY"));
-print("</pre>");
-print("get_status :<pre>");
-var_dump($session_husqvarna->get_geofence("170811841-170130242"));
-print("</pre>");
+
+// print("list_robot :\n");
+// var_dump($session_husqvarna->list_robots());
+// print("\n");
+
+// print("control :\n");
+// var_dump($session_husqvarna->control("191510477-191232162", 'START'));
+// print("\n");
+
+print("get_status :\n");
+var_dump($session_husqvarna->get_status("191510477-191232162"));
+print("\n");
+
+// print("get_geofence :<pre>");
+// var_dump($session_husqvarna->get_geofence("191510477-191232162"));
+// print("</pre>");
+
+// print("get_settings :\n");
+// var_dump($session_husqvarna->get_settings("191510477-191232162"));
+// print("\n");
+
+print("get_statistics :\n");
+var_dump($session_husqvarna->get_statistics_app("191510477-191232162"));
+print("\n");
+
+print("get_timers :\n");
+var_dump($session_husqvarna->get_timers("191510477-191232162"));
+print("\n");
+var_dump($session_husqvarna->get_timers_app("191510477-191232162"));
+print("\n");
+
 $session_husqvarna->logout();
 ?>
