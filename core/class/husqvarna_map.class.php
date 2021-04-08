@@ -83,35 +83,40 @@ class husqvarna_map extends eqLogic {
 
     private function getListeDefaultCommandes()
     {
-        return array( "batteryPercent"     => array('Batterie',               'h', 'info',  'numeric', "%", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "connected"          => array('Connecté',               'h', 'info',  'binary',   "", 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
-                      "lastErrorCode"      => array('Code erreur',            'h', 'info',  'numeric',  "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "commande"           => array('Commande',               'h', 'action','select',   "", 0, "GENERIC_ACTION", '',      '',      'START|'.__('Démarrer',__FILE__).';STOP|'.__('Arrêter',__FILE__).';PARK|'.__('Ranger',__FILE__)),
-                      "mowerStatus"        => array('Etat robot',             'h', 'info',  'string',   "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "operatingMode"      => array('Mode de fonctionnement', 'h', 'info',  'string',   "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "nextStartSource"    => array('Prochain départ',        'h', 'info',  'string',   "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "nextStartTimestamp" => array('Heure prochain départ',  'h', 'info',  'string',  "ut2", 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
-                      "storedTimestamp"    => array('Heure dernier rapport',  'h', 'info',  'string',  "ut1", 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
-                      "errorStatus"        => array('Statut erreur',          'p', 'info',  'string',   "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "planning_en"        => array('Planification cmd',      'p', 'action','other',    "", 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
-                      "planning_activ"     => array('Planification',          'p', 'info',  'binary',   "", 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
-                      "planning_state"     => array('Etat planification',     'p', 'info',  'string',   "", 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "planning_nbcy_tot"  => array('Nombre de cycles total', 'p', 'info',  'numeric',  "", 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "planning_nbcy_z1"   => array('Nombre de cycles zone1', 'p', 'info',  'numeric',  "", 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "meteo_en"           => array('Météo cmd',              'p', 'action','other',    "", 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
-                      "meteo_activ"        => array('Météo',                  'p', 'info',  'binary',   "", 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
-                      "lastLocations"      => array('Position GPS',           'h', 'info',  'string',   "", 0, "GENERIC_INFO",   'husqvarna_map::maps_husqvarna', 'husqvarna_map::maps_husqvarna', ''),
-                      "gps_posx"           => array('GPS position X',         'p', 'info',  'numeric',  "", 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "gps_posy"           => array('GPS position Y',         'p', 'info',  'numeric',  "", 0, "GENERIC_INFO",   'core::line', 'core::line', '')
+        return array( "batteryPercent"     => array('Batterie',               'h', 'info',  'numeric', "%",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "connected"          => array('Connecté',               'h', 'info',  'binary',   "",   0, 1, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
+                      "lastErrorCode"      => array('Code erreur',            'h', 'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "commande"           => array('Commande',               'h', 'action','select',   "",   0, 0, "GENERIC_ACTION", '',      '',      'START|'.__('Démarrer',__FILE__).';STOP|'.__('Arrêter',__FILE__).';PARK|'.__('Ranger',__FILE__)),
+                      "mowerStatus"        => array('Etat robot',             'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "operatingMode"      => array('Mode de fonctionnement', 'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "nextStartSource"    => array('Prochain départ',        'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "nextStartTimestamp" => array('Heure prochain départ',  'h', 'info',  'string',  "ut2", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
+                      "storedTimestamp"    => array('Heure dernier rapport',  'h', 'info',  'string',  "ut1", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
+                      "errorStatus"        => array('Statut erreur',          'p', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "planning_en"        => array('Planification cmd',      'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
+                      "planning_activ"     => array('Planification',          'p', 'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
+                      "planning_state"     => array('Etat planification',     'p', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "planning_nbcy_tot"  => array('Nombre de cycles total', 'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
+                      "planning_nbcy_z1"   => array('Nombre de cycles zone1', 'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
+                      "meteo_en"           => array('Météo cmd',              'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
+                      "meteo_activ"        => array('Météo',                  'p', 'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
+                      "lastLocations"      => array('Position GPS',           'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'husqvarna_map::maps_husqvarna', 'husqvarna_map::maps_husqvarna', ''),
+                      "gps_posx"           => array('GPS position X',         'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
+                      "gps_posy"           => array('GPS position Y',         'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
+                      "stat_tps_running"   => array("Temps fonctionnement",   'p', 'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
+                      "stat_tps_cutting"   => array("Temps tonte",            'p', 'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
+                      "stat_tps_charging"  => array("Temps chargement",       'p', 'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
+                      "stat_tps_searching" => array("Temps recherche",        'p', 'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
+                      "stat_nb_collision"  => array("Nombre collisions",      'p', 'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
+                      "stat_nb_charging"   => array("Nombre cycle charge",    'p', 'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', '')
         );
     }
 
     //public function postSave()
     public function postSave()
     {
-        foreach( $this->getListeDefaultCommandes() as $id => $data)
-        {
-            list($name, $husqcmd, $type, $subtype, $unit, $invertBinary, $generic_type, $template_dashboard, $template_mobile, $listValue) = $data;
+        foreach( $this->getListeDefaultCommandes() as $id => $data) {
+            list($name, $husqcmd, $type, $subtype, $unit, $invertBinary, $hist, $generic_type, $template_dashboard, $template_mobile, $listValue) = $data;
             $cmd = $this->getCmd(null, $id);
             if ( ! is_object($cmd) ) {
                 $cmd = new husqvarna_mapCmd();
@@ -121,8 +126,7 @@ class husqvarna_map extends eqLogic {
                 $cmd->setSubType($subtype);
                 $cmd->setUnite($unit);
                 $cmd->setLogicalId($id);
-                if ( $listValue != "" )
-                {
+                if ( $listValue != "" ) {
                     $cmd->setConfiguration('listValue', $listValue);
                 }
                 $cmd->setDisplay('invertBinary',$invertBinary);
@@ -136,20 +140,17 @@ class husqvarna_map extends eqLogic {
                   $cmd->setDisplay('parameters', array("type"=>"mode","largeurDesktop"=>"60","largeurMobile"=>"30"));
                 }
                 // historic
-                if (in_array($id, array("batteryPercent", "lastErrorCode", "connected"))) {
-                  $cmd->setIsHistorized(1);
-                }
+                $cmd->setIsHistorized($hist);
                 $cmd->save();
             }
-            else
-            {
+            else {
                 $cmd->setType($type);
                 $cmd->setSubType($subtype);
                 $cmd->setUnite($unit);
                 $cmd->setDisplay('invertBinary',$invertBinary);
                 $cmd->setDisplay('generic_type', $generic_type);
-                if ( $listValue != "" )
-                {
+                $cmd->setIsHistorized($hist);
+                if ( $listValue != "" ) {
                     $cmd->setConfiguration('listValue', $listValue);
                 }
                 $cmd->save();
@@ -237,8 +238,7 @@ class husqvarna_map extends eqLogic {
             // =================================================
             $status = $session_husqvarna->get_status($this->getLogicalId());
             $min = intval(date('i'));
-            foreach( $this->getListeDefaultCommandes() as $id => $data)
-            {
+            foreach( $this->getListeDefaultCommandes() as $id => $data) {
                 list($name, $husqcmd, $type, $subtype, $unit, $invertBinary, $generic_type, $template_dashboard, $template_mobile, $listValue) = $data;
                 if ($id == "lastLocations") {
                   $cmd = $this->getCmd(null, $id);
@@ -288,18 +288,14 @@ class husqvarna_map extends eqLogic {
                   }
                   
                 }
-                elseif (($type != "action") and ($husqcmd != "p"))
-                {
+                elseif (($type != "action") and ($husqcmd != "p")) {
                     $cmd = $this->getCmd(null, $id);
                     // Values are stored if new or every 5 mins
-                    if (($cmd->execCmd() != $cmd->formatValue($status->{$id})) or (($min%5)==0))
-                    {
+                    if (($cmd->execCmd() != $cmd->formatValue($status->{$id})) or (($min%5)==0)) {
                         $cmd->setCollectDate('');
-                        if (substr($unit,0,2) != "ut")
-                        {
+                        if (substr($unit,0,2) != "ut") {
                             log::add('husqvarna_map','debug',"Refresh ".$id." : ".$status->{$id});
-                            if ($id == "lastErrorCode")
-                            {
+                            if ($id == "lastErrorCode") {
                                 $error_code = $status->{$id};
                                 // Update corresponding error message
                                 $error_status = $session_husqvarna->get_error_code($error_code);
@@ -309,15 +305,12 @@ class husqvarna_map extends eqLogic {
                                 if ($error_code != 0)
                                   log::add('husqvarna_map','info',"Erreur robot: code=".$error_code." / Erreur = ".$error_status);
                             }
-                            else 
-                            {
+                            else {
                                 $cmd->event($status->{$id});
                             }
                         }
-                        else
-                        {
-                            if ($status->{$id} == 0)
-                            {
+                        else {
+                            if ($status->{$id} == 0) {
                                 $cmd->event(__('Inconnue',__FILE__));
                             } else {
                                 if ($unit == "ut1") {
@@ -335,6 +328,34 @@ class husqvarna_map extends eqLogic {
                     }
                 }
             }
+            // mise à jour des infos de statistiques
+            // =====================================
+            if (($min%5)==0) {
+              $stat = $session_husqvarna->get_statistics_app($this->getLogicalId());
+              $totalRunningTime   = intval($stat->totalRunningTime);
+              $totalCuttingTime   = intval($stat->totalCuttingTime);
+              $totalChargingTime  = intval($stat->totalChargingTime);
+              $totalSearchingTime = intval($stat->totalSearchingTime);
+
+              $totalRunningTime_nbh   = round($totalRunningTime/3600);
+              $totalCuttingTime_nbh   = round($totalCuttingTime/3600);
+              $totalChargingTime_nbh  = round($totalChargingTime/3600);
+              $totalSearchingTime_nbh = round($totalSearchingTime/3600);
+
+              $cmd = $this->getCmd(null, "stat_tps_running");
+              $cmd->event($totalRunningTime_nbh);
+              $cmd = $this->getCmd(null, "stat_tps_cutting");
+              $cmd->event($totalCuttingTime_nbh);
+              $cmd = $this->getCmd(null, "stat_tps_charging");
+              $cmd->event($totalChargingTime_nbh);
+              $cmd = $this->getCmd(null, "stat_tps_searching");
+              $cmd->event($totalSearchingTime_nbh);
+              $cmd = $this->getCmd(null, "stat_nb_collision");
+              $cmd->event($stat->numberOfCollisions);
+              $cmd = $this->getCmd(null, "stat_nb_charging");
+              $cmd->event($stat->numberOfChargingCycles);
+            }
+
             // Gestion de la planification du robot
             // ====================================
             // recuperation des parametres de planification

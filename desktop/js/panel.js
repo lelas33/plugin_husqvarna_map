@@ -292,11 +292,24 @@ function stat_usage () {
   charging_mean_duration = duration_charging/nb_cycle_charging;
   cutting_mean_duration = duration_cutting/nb_cycle_cutting;
   // Affichage des résultats dans le DIV:"div_hist_usage"
+  str_duration_charging = Math.round(duration_charging/60)+" mn";
+  if (duration_charging > 3600)
+    str_duration_charging += " ("+Math.round(duration_charging/3600)+" h)";
+  str_duration_leaving = Math.round(duration_leaving/60)+" mn";
+  if (duration_leaving > 3600)
+    str_duration_leaving += " ("+Math.round(duration_leaving/3600)+" h)";
+  str_duration_cutting = Math.round(duration_cutting/60)+" mn";
+  if (duration_cutting > 3600)
+    str_duration_cutting += " ("+Math.round(duration_cutting/3600)+" h)";
+  str_duration_searching = Math.round(duration_searching/60)+" mn";
+  if (duration_searching > 3600)
+    str_duration_searching += " ("+Math.round(duration_searching/3600)+" h)";
+  
   $("#div_hist_usage").empty();
-  $("#div_hist_usage").append("Temps de recharge: "+Math.round(duration_charging/60)+" mn<br>");
-  $("#div_hist_usage").append("Temps de départ: "+Math.round(duration_leaving/60)+" mn<br>");
-  $("#div_hist_usage").append("Temps de fonctionnement en coupe: "+Math.round(duration_cutting/60)+" mn<br>");
-  $("#div_hist_usage").append("Temps de recherche: "+Math.round(duration_searching/60)+" mn<br><br>");
+  $("#div_hist_usage").append("Temps de recharge: "+str_duration_charging+"<br>");
+  $("#div_hist_usage").append("Temps de départ: "+str_duration_leaving+"<br>");
+  $("#div_hist_usage").append("Temps de fonctionnement en coupe: "+str_duration_cutting+"<br>");
+  $("#div_hist_usage").append("Temps de recherche: "+str_duration_searching+"<br><br>");
   $("#div_hist_usage").append("Nombre de cycle de recharge: "+nb_cycle_charging+"<br>");
   $("#div_hist_usage").append("Nombre de cycle de coupe: "+nb_cycle_cutting+"<br>");
   $("#div_hist_usage").append("Durée moyenne des cycles de recharge: "+((nb_cycle_charging==0)?"--":Math.round(charging_mean_duration/60))+" mn<br>");
