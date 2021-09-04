@@ -8,7 +8,7 @@ Il reste globalement compatible de cette version de référence, car les Infos e
 Les fonctions ajoutées au plugin actuel sont:
 * La position courante GPS du robot et des 50 dernières positions pour l’affichage sur une carte dans le widget.
 * La gestion d’une planification du robot sur un rythme hebdomadaire, avec 2 plages horaires quotidiennes, et la possibilité de sélectionner une zone active du robot par commande Jeedom (pour ceux qui ont mis en place 2 zones de tontes avec commutation par relais)
-* La possibilité d’interrompre et de reprendre la planification en fonction de la météo, par couplage avec le plugin «Vigilence Météo / pluie à 1 h».
+* La possibilité d’interrompre et de reprendre la planification en fonction de la météo, par couplage avec le plugin «Météo France/ pluie à 1 h».
 * La mise en place d’une page «panel» qui permet:
   * D’afficher sur une carte les positions du robot dans le temps. Cela permet de visualiser si le robot couvre uniformément l’espace à tondre.
   * D’afficher la configuration actuelle du robot (juste pour information pour le moment)
@@ -19,6 +19,7 @@ Les fonctions ajoutées au plugin actuel sont:
 
 ## Versions
 * Tag husqmap_v1.0: (25/10/2020) Version originale de ce plugin, après changement de nom du plugin et changement de la documentation pour l'installation. Affichage des erreurs Robots dans le panel.
+* Tag husqmap_v1.1: (04/09/2021) Ajout des statistiques de l'appli sur le widget équipement, et accès direct au panel en par un clic sur la carte du widget. Utilisation du plugin Météo France possible pour le retour à la base en cas de pluie.
 
 ## Installation du plugin
 Par source Github:
@@ -87,12 +88,10 @@ Les commandes jeedom à définir sur la page de configuration permettent de sél
 La zone 1 est considérée par le plugin comme la zone ou le relai est Off, car elle est activée lorsque le robot est à sa base. (cela économise un peu de courant)
 
 **Détails sur la planification: option météo**
-Le couplage de la planification avec le plugin vigilance météo permet de suspendre le fonctionnement du robot si de la pluie est prévue dans l'heure qui suit, selon les 2 principes suivants:<br>
+Le couplage de la planification avec le plugin Météo France permet de suspendre le fonctionnement du robot si de la pluie est prévue dans l'heure qui suit, selon les 2 principes suivants:<br>
 Pour rappel, le plugin météo / prévision dans l'heure fourni une probabilité de pluie entre 1 et 4 par tranche de 5 mn, dans l'heure qui vient. (1: pas de pluie à 4:pluie forte)
 * Si le robot est à sa base et que la quantité de pluie dans l'heure qui vient est supérieure à 18, le robot suspend le cycle de tonte. (12 correspond à aucune pluie prévue dans l'heure)
 * Si le robot est dans un cycle de tonte et que la quantité de pluie dans les 15 mn qui suivent est supérieure à 6, le robot rentre à sa base. (3 correspond à aucune pluie prévue dans les 15 mn)
-
-(il est possible que ces seuils aient besoin d'être ajustés: je les ajouterai en paramètres dans une prochaine version)
 
 **Remarque sur la planification:**
 La planification du plugin est complémentaire à celle intégrée dans le robot.
