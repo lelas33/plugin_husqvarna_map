@@ -93,12 +93,12 @@ class husqvarna_map extends eqLogic {
                       "nextStartTimestamp" => array('Heure prochain départ',  'h', 'info',  'string',  "ut2", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
                       "storedTimestamp"    => array('Heure dernier rapport',  'h', 'info',  'string',  "ut1", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
                       "errorStatus"        => array('Statut erreur',          'p', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "planning_en"        => array('Planification cmd',      'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
+                      "planning_en"        => array('Planification cmd',      'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'husqvarna_map::on_off', 'husqvarna_map::on_off',      ''),
                       "planning_activ"     => array('Planification',          'p', 'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
                       "planning_state"     => array('Etat planification',     'p', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "planning_nbcy_tot"  => array('Nombre de cycles total', 'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
                       "planning_nbcy_z1"   => array('Nombre de cycles zone1', 'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "meteo_en"           => array('Météo cmd',              'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'custom::IconActionNt', 'custom::IconActionNt',      ''),
+                      "meteo_en"           => array('Météo cmd',              'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'husqvarna_map::on_off', 'husqvarna_map::on_off',      ''),
                       "meteo_activ"        => array('Météo',                  'p', 'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
                       "lastLocations"      => array('Position GPS',           'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'husqvarna_map::maps_husqvarna', 'husqvarna_map::maps_husqvarna', ''),
                       "gps_posx"           => array('GPS position X',         'p', 'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
@@ -149,6 +149,8 @@ class husqvarna_map extends eqLogic {
                 $cmd->setUnite($unit);
                 $cmd->setDisplay('invertBinary',$invertBinary);
                 $cmd->setDisplay('generic_type', $generic_type);
+                // $cmd->setTemplate('dashboard', $template_dashboard);
+                // $cmd->setTemplate('mobile', $template_mobile);
                 $cmd->setIsHistorized($hist);
                 if ( $listValue != "" ) {
                     $cmd->setConfiguration('listValue', $listValue);

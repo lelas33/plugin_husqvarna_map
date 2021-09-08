@@ -1,0 +1,24 @@
+<div style="width:80px;min-height:50px;" class="cmd tooltips cmd-widget cursor" data-type="info" data-subtype="other" data-cmd_id="#id#" data-cmd_uid="#uid#">
+    <center>
+      <div class="title #hide_name#">
+        <div class="cmdName">#valueName#</div>
+      </div>
+      <div class="content-sm">
+        <span style="font-size: 3em;font-weight: bold;margin-top: 5px;" class="action iconCmd#uid#"></span>
+      </div>
+    </center>
+    <script>
+        jeedom.cmd.update['#id#'] = function(_options){
+          $('.iconCmd#uid#').empty();
+          if (_options.display_value == '1') {
+              $('.iconCmd#uid#').append('<img src="plugins/husqvarna_map/core/template/dashboard/mode_on.png" width="60"/>');
+          } else {
+              $('.iconCmd#uid#').append('<img src="plugins/husqvarna_map/core/template/dashboard/mode_off.png" width="60"/>');
+          }
+        }
+        $('.cmd[data-cmd_uid=#uid#] .action').on('click', function () {
+            jeedom.cmd.execute({id: '#id#'});
+        });
+        jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+    </script>
+</div>
