@@ -437,9 +437,9 @@ sendVarToJS('eqType', 'husqvarna_map');
                         </div>
                         <legend>{{Image de localisation}}</legend>
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">{{Placer un fichier nommé "maison.png" dans le dossier "ressources" du plugin.<br>Le fichier doit faire autour de 500 x 500 pixels. L'image doit apparaitre à côté}}</label>
+                          <label class="col-sm-3 control-label">{{Placer un fichier nommé "maison.png" dans le dossier "data" du plugin.<br>Le fichier doit faire autour de 500 x 500 pixels. L'image doit apparaitre à côté}}</label>
                           <div class="col-lg-3">
-                            <img class="pull-left" src="plugins/husqvarna_map/ressources/maison.png" />
+                            <img class="pull-left" src="plugins/husqvarna_map/data/maison.png" />
                           </div>
                         </div>
                         <div class="form-group" style="min-height: 10px;">

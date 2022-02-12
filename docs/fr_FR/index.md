@@ -34,8 +34,6 @@ Par source Github:
   * Saisissez vos identifiant de compte Husqvarna. Puis Sauvegarder
   * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement. Puis Sauvegarder
 
-L'installation est également possible par le market Jeedom
-
 ## Préparation pour le Widget
 Le widget sera configuré automatiquement par le plugin lors de la création de l'équipement.
 

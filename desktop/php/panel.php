@@ -29,7 +29,7 @@ $eqLogics = eqLogic::byType('husqvarna_map');
                 </div>
                 <div class="form-horizontal" style="min-height: 30px;">
                 </div>
-                <img class="pull-right" src="plugins/husqvarna_map/ressources/automower.png" height="186" width="350" />
+                <img class="pull-right" src="plugins/husqvarna_map/data/automower.png" height="186" width="350" />
                 <div class="pull-left" style="min-height:150px;font-size: 1.5em;">
                   <i style="font-size: initial;"></i> {{Période analysée}}
                   <br>
@@ -68,7 +68,7 @@ $eqLogics = eqLogic::byType('husqvarna_map');
                            <canvas class="myCanvas" width="600" height="600" style="border:5px solid #000000;">';
                              </canvas>
                              <div style="display:none;">
-                               <img id="img_loc" src="plugins/husqvarna_map/ressources/maison.png">
+                               <img id="img_loc" src="plugins/husqvarna_map/data/maison.png">
                              </div>
                            </div> 
                          </div>

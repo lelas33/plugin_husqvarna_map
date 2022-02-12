@@ -21,7 +21,7 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__) . '/../../3rdparty/husqvarna_map_api.class.php';
 
 define("MOWER_LOG_FILE", "/../../data/mower_log.txt");
-define("MOWER_IMG_FILE", "/../../ressources/maison.png");
+define("MOWER_IMG_FILE", "/../../data/maison.png");
 const DAY_NAMES = ["dim","lun","mar","mer","jeu","ven","sam"];
 
 // etats du mode de planification

@@ -2,7 +2,7 @@
 	"id" : "husqvarna_map",
 	"name" : "Husqvarna-MAP",
 	"licence" : "AGPL",
-	"author" : "Jeedom Legacy",
+	"author" : "Lelas",
 	"require" : "4.0",
 	"category" : "devicecommunication",
 	"display" : "panel",
