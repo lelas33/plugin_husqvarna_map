@@ -1,7 +1,7 @@
 <?php
 require_once("husqvarna_map_api.class.php");
-$account = "laurent.jardin@free.fr";
-$passwd = "etienne_bat";
+$account = "xx.yy@zz.fr";
+$passwd = "pp";
 $session_husqvarna = new husqvarna_map_api();
 $session_husqvarna->login($account, $passwd);
 
