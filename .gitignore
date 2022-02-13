@@ -1,4 +1,5 @@
 # Ignoring directories (Both the directory itself and its contents will be ignored.)
 /ressources/python/
+/3rdparty/sample_lau.php
 /data/mower_log.txt
 /data/maison.png
