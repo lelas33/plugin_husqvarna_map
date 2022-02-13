@@ -8,7 +8,7 @@
 
 # 04/09/2021
 - Ajout des statistiques de l'appli sur le widget équipement, et accès direct au panel en par un clic sur la carte du widget.
-- Utilisation du plugin Météo France possible pour le retour à la base en cas de pluie.(Tag husqmap_v1.1).
+- Utilisation du plugin Météo France possible pour le retour à la base en cas de pluie.
 <br>(Tag husqmap_v1.1)
 
 # 12/02/2022
