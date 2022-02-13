@@ -14,12 +14,12 @@ Les fonctions ajoutées au plugin actuel sont:
   * D’afficher la configuration actuelle du robot (juste pour information pour le moment)
 
 <p align="left">
-  <img src="../master/doc/images/widget.png" width="300" title="Widget dashboard">
+  <img src="../master/docs/images/widget.png" width="300" title="Widget dashboard">
 </p>
 
 ## Documentation
-[Documentation](../../tree/master/doc/fr_FR/index.md)
+[Documentation](../../tree/master/docs/fr_FR/index.md)
 
 ## Versions
-[Versions](../../tree/master/doc/fr_FR/changelog.md)
+[Versions](../../tree/master/docs/fr_FR/changelog.md)
 

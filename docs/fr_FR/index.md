@@ -14,7 +14,7 @@ Les fonctions ajoutées au plugin actuel sont:
   * D’afficher la configuration actuelle du robot (juste pour information pour le moment)
 
 <p align="left">
-  <img src="../master/doc/images/widget.png" width="300" title="Widget dashboard">
+  <img src="../master/docs/images/widget.png" width="300" title="Widget dashboard">
 </p>
 
 ## Installation du plugin
@@ -49,7 +49,7 @@ Le fichier image obtenu doit être placé dans le dossier "ressources" du plugin
 * Saisir ensuite les coordonnées GPS des 2 coins de l'image
 
 <p align="left">
-  <img src="../master/doc/images/installation_1.png" width="600" title="Configuration Carte">
+  <img src="../master/docs/images/installation_1.png" width="600" title="Configuration Carte">
 </p>
 
 * Sur l'onglet "**Panification**", vous pouvez définir les plages horaires de fonctionnement de votre robot.
@@ -68,7 +68,7 @@ Pour chaque plage horaire, on peux associer une zone de tonte, avec un chiffre e
   * 3: Alternance des zones 1 et 2, selon le pourcentage défini précédemment.
   
 <p align="left">
-  <img src="../master/doc/images/installation_2.png" width="600" title="Configuration Planification">
+  <img src="../master/docs/images/installation_2.png" width="600" title="Configuration Planification">
 </p>
 
 **Détails sur la planification: gestion de 2 zones de fonctionnement**
@@ -109,12 +109,12 @@ Soit des traits pointillés entre chaque position, soit des cercles partiellemen
 Ce second mode d'affichage permet de mieux voir les zones tondues ou non sur des grandes quantités de points.
 
 <p align="left">
-  <img src="../master/doc/images/pannel_1.png" width="600" title="Configuration Planification">
+  <img src="../master/docs/images/pannel_1.png" width="600" title="Configuration Planification">
 </p>
 
 Cette page permet également en sélectionnant le bouton "Config Robot" de lire la configuration courante du robot, et de l'afficher.
 L'affichage est relativement "brut", et uniquement pour information.
 
 <p align="left">
-  <img src="../master/doc/images/pannel_2.png" width="450" title="Configuration Planification">
+  <img src="../master/docs/images/pannel_2.png" width="450" title="Configuration Planification">
 </p>
