@@ -84,14 +84,14 @@ class husqvarna_map extends eqLogic {
     private function getListeDefaultCommandes()
     {
         return array( "batteryPercent"     => array('Batterie',               'h', 'info',  'numeric', "%",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "connected"          => array('Connecté',               'h', 'info',  'binary',   "",   0, 1, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
+                      "connected"          => array('Connecté',               'h', 'info',  'binary',   "",   0, 1, "GENERIC_INFO",   'husqvarna_map::connecte', 'husqvarna_map::connecte', ''),
                       "lastErrorCode"      => array('Code erreur',            'h', 'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "commande"           => array('Commande',               'h', 'action','select',   "",   0, 0, "GENERIC_ACTION", '',      '',      'START|'.__('Démarrer',__FILE__).';STOP|'.__('Arrêter',__FILE__).';PARK|'.__('Ranger',__FILE__)),
                       "mowerStatus"        => array('Etat robot',             'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "operatingMode"      => array('Mode de fonctionnement', 'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "nextStartSource"    => array('Prochain départ',        'h', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "nextStartTimestamp" => array('Heure prochain départ',  'h', 'info',  'string',  "ut2", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
-                      "storedTimestamp"    => array('Heure dernier rapport',  'h', 'info',  'string',  "ut1", 0, 0, "GENERIC_INFO", 'core::badge', 'core::badge', ''),
+                      "nextStartTimestamp" => array('Heure prochain départ',  'h', 'info',  'string',  "ut2", 0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "storedTimestamp"    => array('Heure dernier rapport',  'h', 'info',  'string',  "ut1", 0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "errorStatus"        => array('Statut erreur',          'p', 'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "planning_en"        => array('Planification cmd',      'p', 'action','other',    "",   0, 0, "GENERIC_ACTION", 'husqvarna_map::on_off', 'husqvarna_map::on_off',      ''),
                       "planning_activ"     => array('Planification',          'p', 'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
