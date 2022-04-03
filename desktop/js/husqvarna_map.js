@@ -110,7 +110,7 @@ $('.eqLogicDetect').on('click', function() {
         type: "POST", // methode de transmission des données au fichier php
         url: "plugins/husqvarna_map/core/ajax/husqvarna_map.ajax.php", // url du fichier php
         data: {
-            action: "force_detect_movers",
+            action: "force_detect_mowers",
         },
         dataType: 'json',
         error: function(request, status, error) {

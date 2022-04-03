@@ -127,8 +127,8 @@ try {
 
 	ajax::init();
 
-  if (init('action') == 'force_detect_movers') {
-		$husqvarna_mapCmd = husqvarna_map::force_detect_movers();
+  if (init('action') == 'force_detect_mowers') {
+		$husqvarna_mapCmd = husqvarna_map::force_detect_mowers();
 		ajax::success($husqvarna_mapCmd);
     }
   else if (init('action') == 'getLogData') {

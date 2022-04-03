@@ -9,13 +9,12 @@ sendVarToJS('eqType', 'husqvarna_map');
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
-                <a class="btn btn-default eqLogicDetect" style="width : 100%;margin-top : 5px;margin-bottom: 5px;"><i class="fa fa-refresh"></i> {{Detecter}}</a>
                 <?php
-				$eqLogics = eqLogic::byType('husqvarna_map');
-				foreach ($eqLogics as $eqLogic) {
-                    echo '<li>'."\n";
-						echo '<a class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" data-eqLogic_type="husqvarna_map"><i class="fa fa-download"></i> ' . $eqLogic->getName() . '</a>'."\n";
-					echo '</li>'."\n";
+                  $eqLogics = eqLogic::byType('husqvarna_map');
+                  foreach ($eqLogics as $eqLogic) {
+                              echo '<li>'."\n";
+                      echo '<a class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" data-eqLogic_type="husqvarna_map"><i class="fa fa-download"></i> ' . $eqLogic->getName() . '</a>'."\n";
+                    echo '</li>'."\n";
                 }
                 ?>
             </ul>
@@ -26,13 +25,13 @@ sendVarToJS('eqType', 'husqvarna_map');
         <div class="eqLogicThumbnailContainer">
             <div class="cursor eqLogicDetect" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
                 <center>
-                    <i class="fa fa-refresh" style="font-size : 6em;color:#94ca02;"></i>
+                    <i class="fas fa-bullseye" style="font-size : 4em;color:#94ca02;"></i>
                 </center>
                 <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Detecter}}</center></span>
             </div>
             <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
                 <center>
-                    <i class="fa fa-wrench" style="font-size : 6em;color:#767676;"></i>
+                    <i class="fa fa-wrench" style="font-size : 4em;color:#767676;"></i>
                 </center>
                 <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
             </div>
@@ -40,12 +39,10 @@ sendVarToJS('eqType', 'husqvarna_map');
         <legend>{{Mes equipements}}</legend>
 		<div class="eqLogicThumbnailContainer">
 			<div class="cursor eqLogicAction" data-action="add" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
-				<center>
+ 				<center>
 					<i class="fa fa-plus-circle" style="font-size : 7em;color:#94ca02;"></i>
 				</center>
-				<span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02">
-					<center>{{Ajouter}}</center>
-				</span>
+        <span style="font-size : 1.1em;position:relative; top : 5px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Ajouter}}</center></span>
 			</div>
 			<?php
 	        if (count($eqLogics) == 0) {
@@ -83,13 +80,25 @@ sendVarToJS('eqType', 'husqvarna_map');
                            <i class='fa fa-cogs eqLogicAction pull-right cursor expertModeVisible' data-action='configure'></i>
                        </legend>
                         <div class="form-group">
-                            <label class="col-lg-2 control-label">{{Identifiant de l'équipement}}</label>
+                            <label class="col-lg-2 control-label">{{Identifiant équipement}}</label>
                             <div class="col-lg-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" readonly/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-lg-2 control-label">{{Nom de l'équipement}}</label>
+                            <label class="col-lg-2 control-label">{{Modèle équipement}}</label>
+                            <div class="col-lg-3">
+                              <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="equip_model" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">{{N° série équipement}}</label>
+                            <div class="col-lg-3">
+                              <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="equip_sn" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">{{Nom équipement}}</label>
                             <div class="col-lg-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de la husqvarna}}"/>

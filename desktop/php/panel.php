@@ -68,7 +68,7 @@ $eqLogics = eqLogic::byType('husqvarna_map');
                            <canvas class="myCanvas" width="600" height="600" style="border:5px solid #000000;">';
                              </canvas>
                              <div style="display:none;">
-                               <img id="img_loc" src="plugins/husqvarna_map/data/maison.png">
+                               <img id="img_loc" src="plugins/husqvarna_map/data/maison.png" />
                              </div>
                            </div> 
                          </div>
