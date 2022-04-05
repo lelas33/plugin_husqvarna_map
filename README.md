@@ -1,5 +1,7 @@
 # plugin-husqvarna_map
 
+Attention : release en cours pour changement d'API.
+
 ## Fonctions
 
 Ce plugin est basé sur la version de référence disponible sur le market Jeedom, et ajoute des fonctions complémentaires.
