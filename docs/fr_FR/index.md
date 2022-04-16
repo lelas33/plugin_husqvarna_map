@@ -31,16 +31,33 @@ Par source Github:
 * Rafraichir la page: Le plugin "husqvarna_map" doit apparaitre. Sélectionner son symbole pour aller dans sa page de configuration.
 * Sur la page de configuration du plugin:
   * Activer le plugin
-  * Saisissez vos identifiant de compte Husqvarna. Puis Sauvegarder
+  * Saisissez vos identifiant de compte Husqvarna.
+  * Saisissez votre code "Application key" (voir ci dessous pour l'obtenir). Puis Sauvegarder
   * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement. Puis Sauvegarder
 
-## Préparation pour le Widget
-Le widget sera configuré automatiquement par le plugin lors de la création de l'équipement.
+## Obtention d'un code "application key"
+C'est une nouveauté exigée par l'utilisation de la dernière API Husqvarna. La méthode d'authentification est plus complexe. <br>
+Il faut se connecter sur la page "developper portail" : https://developer.husqvarnagroup.cloud/
+* Connectez vous avec les identifiants de votre compte Husqvarna ("Sign in" en haut à droite de la page)
+* Allez dans le menu "My Applications"
+* Créer une application: bouton "+ Create Application"
+* Donnez un nom, une description (optionnelle)
+* Le champ "Redirect URIs" peut rester optionnel (Il sera pré-rempli avec la valeur http://localhost:8080)
+* Valider par Create. Vous obtenez alors les valeurs "Application key" et "Application secret"
+* Ajouter les API à associer à cette application en cliquant sur le bouton "+ Connect new API"
+* Ajouter les 2 API "Authentification API" et "Automower Connect API"
+
 
 ## Création de l'équiment (de votre tondeuse)
 Aller dans le menu "plugins/objets connectés/Husqvarna-MAP" de jeedom pour créer votre équipement.
-Lancer la détection de votre robot, ce qui crée l'équipement correspondant automatiquement.
+Lancer la détection de votre robot, ce qui crée l'équipement correspondant automatiquement. (bouton Double anneau vert)
+<p align="left">
+  <img src="../images/installation_0.png" width="400" title="Configuration Carte">
+</p>
 * Puis, sur l'onglet "**Equipement**", choisissez l'objet parent
+(Les 3 champs Identifiant, Modèle de N° de série sont pré-remplis)
+
+
 * Sur l'onglet "**Config.Carte**", vous pouvez définir l'image qui sera utilisée par le plugin pour l'utilisation de la position GPS de votre robot.
 Comme indiqué sur cette page, il faut générer une image au format "png", de taille environ 500 x 500 pixels, qui représente votre terrain et qui soit géo-référencée. Le plus simple pour cela est d'utiliser Google map en mode satellite. (Vous faite une copie d'écran, en notant bien les coordonnées GPS des 2 coins supérieur/gauche et inférieur/droit, sous la forme latitude,longitude (exemple:48.858748, 2.293794)
 (Attention, cette carte doit être orientée Nord en haut.)

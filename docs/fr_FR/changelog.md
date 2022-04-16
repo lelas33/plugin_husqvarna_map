@@ -15,3 +15,7 @@
 - Modification de la position des fichiers images pour la compatibilité avec le core Jeedom V4.2
 <br>(Tag husqmap_v1.2)
 
+# 16/04/2022
+- Changement pour la dernière API Husqvarna.
+<br>(Tag husqmap_v1.3)
+

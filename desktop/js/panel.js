@@ -387,6 +387,8 @@ $('#bt_getSettings').on('click',function(){
 // Interrogation du robot sur sa configuration
 // ===========================================
 function mower_get_settings(){
+    alert("Non disponible pour le moment!");
+    return;
     $.ajax({
         type: 'POST',
         url: 'plugins/husqvarna_map/core/ajax/husqvarna_map.ajax.php',
