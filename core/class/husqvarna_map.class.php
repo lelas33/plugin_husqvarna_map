@@ -105,7 +105,7 @@ class husqvarna_map extends eqLogic {
                       "mode"               => array('Mode',                   'info',  'string',   "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "activity"           => array('Activité',               'info',  'string',   "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "state"              => array('Etat courant',           'info',  'string',   "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
-                      "state_visual"       => array('Statut visuel',          'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
+                      "state_visual"       => array('Statut visuel',          'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'husqvarna_map::state_visual', 'husqvarna_map::state_visual', ''),
                       "errorCode"          => array('Code erreur',            'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "errorStatus"        => array('Statut erreur',          'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
                       "errorTS"            => array('Date erreur',            'info',  'string',   "",   0, 0, "GENERIC_INFO",   'core::badge', 'core::badge', ''),
@@ -167,8 +167,8 @@ class husqvarna_map extends eqLogic {
                 $cmd->setUnite($unit);
                 $cmd->setDisplay('invertBinary',$invertBinary);
                 $cmd->setDisplay('generic_type', $generic_type);
-                // $cmd->setTemplate('dashboard', $template_dashboard);
-                // $cmd->setTemplate('mobile', $template_mobile);
+                $cmd->setTemplate('dashboard', $template_dashboard);
+                $cmd->setTemplate('mobile', $template_mobile);
                 $cmd->setIsHistorized($hist);
                 if ($listValue != "") {
                   $cmd->setConfiguration('listValue', $listValue);
