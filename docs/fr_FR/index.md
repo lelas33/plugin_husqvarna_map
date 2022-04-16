@@ -54,6 +54,7 @@ Lancer la détection de votre robot, ce qui crée l'équipement correspondant au
 <p align="left">
   <img src="../images/installation_0.png" width="400" title="Configuration Carte">
 </p>
+
 * Puis, sur l'onglet "**Equipement**", choisissez l'objet parent
 (Les 3 champs Identifiant, Modèle de N° de série sont pré-remplis)
 
