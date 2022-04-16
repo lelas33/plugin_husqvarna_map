@@ -1,0 +1,28 @@
+<div class="cmd cmd-widget" data-type="info" data-subtype="numeric" data-template="badge" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+  <div class="title #hide_name#">
+    <div class="cmdName">#name_display#</div>
+  </div>
+  <div class="content-sm ">
+    <div class="picture">
+    </div>
+  </div>
+  <script>
+    jeedom.cmd.update['#id#'] = function(_options){
+      var cmd = $('.cmd[data-cmd_id=#id#]');
+      var state_id = _options.display_value;
+
+      console.log("state_id:"+state_id);
+      if (state_id != "") {
+        var img_file = "mower_parked.png";
+        if      (state_id == 1) img_file = "mower_parked.png";
+        else if (state_id == 2) img_file = "mower_charging.png";
+        else if (state_id == 3) img_file = "mower_mowing.png";
+        else if (state_id == 4) img_file = "mower_searching.png";
+        else if (state_id == 5) img_file = "mower_stopped.png";
+        var img_path = '<img src="plugins/husqvarna_map/core/template/dashboard/'+img_file+'" style="max-height:50px;max-width:1000px;height:auto;width:auto;"/>';
+        $('.cmd[data-cmd_id=#id#] .picture').empty().append(img_path);
+      }
+    }
+    jeedom.cmd.update['#id#']({display_value:'#state#'});
+  </script>
+</div>

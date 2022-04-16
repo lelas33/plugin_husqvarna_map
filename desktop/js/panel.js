@@ -19,19 +19,19 @@
 $(".in_datepicker").datepicker();
 
 // Liste des états possible du robot
-var STATE_PARKED_TIMER    	           =  0; 
-var STATE_OK_LEAVING    	             =  1; 
-var STATE_OK_CUTTING    	             =  2; 
-var STATE_PARKED_PARKED_SELECTED    	 =  3; 
-var STATE_OK_SEARCHING    	           =  4; 
-var STATE_OK_CHARGING    	             =  5; 
+var STATE_PARKED_TIMER    	           =  0;
+var STATE_OK_LEAVING    	             =  1;   // used
+var STATE_OK_CUTTING    	             =  2;   // used
+var STATE_PARKED_PARKED_SELECTED    	 =  3;
+var STATE_OK_SEARCHING    	           =  4;   // used
+var STATE_OK_CHARGING    	             =  5;   // used 
 var STATE_PAUSED    	                 =  6; 
 var STATE_PARKED_AUTOTIMER    	       =  7; 
 var STATE_COMPLETED_CUTTING_TODAY_AUTO =  8; 
 var STATE_OK_CUTTING_NOT_AUTO          =  9;
-var STATE_OFF_HATCH_OPEN               = 10; 
+var STATE_OFF_HATCH_OPEN               = 10;
 var STATE_OFF_HATCH_CLOSED             = 11;
-var STATE_ERROR                        = 12;
+var STATE_ERROR                        = 12;   // used
 var STATE_EXECUTING_PARK               = 13;
 var STATE_EXECUTING_START              = 14;
 var STATE_EXECUTING_STOP               = 15;
@@ -160,7 +160,7 @@ function draw_lines(mode_value) {
       ypos = Math.round(map_height * (dtlog_lat[i]-map_t_lat) / lat_height);
       //alert("draw_lines:xpos="+xpos);
       if (mode == 0) {
-        if ((i==0) || (dtlog_ts[i] - prev_ts>100)) {
+        if ((i==0) || (dtlog_ts[i] - prev_ts>310)) {  // (5 mn + 10s) // 100
           ctx.beginPath();
           ctx.strokeStyle = 'red';
           ctx.moveTo(xpos,ypos);

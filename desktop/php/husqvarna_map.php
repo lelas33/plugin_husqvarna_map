@@ -29,6 +29,12 @@ sendVarToJS('eqType', 'husqvarna_map');
                 </center>
                 <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Detecter}}</center></span>
             </div>
+            <div class="cursor eqLogicAction" data-action="add" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+              <center>
+                <i class="fa fa-plus-circle" style="font-size : 4em;color:#94ca02;"></i>
+              </center>
+              <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Ajouter}}</center></span>
+            </div>
             <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
                 <center>
                     <i class="fa fa-wrench" style="font-size : 4em;color:#767676;"></i>
@@ -37,28 +43,22 @@ sendVarToJS('eqType', 'husqvarna_map');
             </div>
         </div>
         <legend>{{Mes equipements}}</legend>
-		<div class="eqLogicThumbnailContainer">
-			<div class="cursor eqLogicAction" data-action="add" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
- 				<center>
-					<i class="fa fa-plus-circle" style="font-size : 7em;color:#94ca02;"></i>
-				</center>
-        <span style="font-size : 1.1em;position:relative; top : 5px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Ajouter}}</center></span>
-			</div>
-			<?php
+		  <div class="eqLogicThumbnailContainer">
+        <?php
 	        if (count($eqLogics) == 0) {
-				echo "<br/><br/><br/><center><span style='color:#767676;font-size:1.2em;font-weight: bold;'>{{Vous n'avez pas encore de Husqvarna, cliquez sur Detecter un équipement pour commencer}}</span></center>";
-			} else {
-                foreach ($eqLogics as $eqLogic) {
-                    echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
-                    echo "<center>";
-                    echo '<img src="plugins/husqvarna_map/plugin_info/husqvarna_map_icon.png" height="105" width="95" />';
-                    echo "</center>";
-                    echo '<span style="font-size : 0.91em;position:relative; top : 5px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"> <center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
-                    echo '</div>';
-                }
+				  echo "<br/><br/><br/><center><span style='color:#767676;font-size:1.2em;font-weight: bold;'>{{Vous n'avez pas encore de Husqvarna, cliquez sur Detecter un équipement pour commencer}}</span></center>";
+			    } else {
+            foreach ($eqLogics as $eqLogic) {
+                echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+                echo "<center>";
+                echo '<img src="plugins/husqvarna_map/plugin_info/husqvarna_map_icon.png" height="105" width="95" />';
+                echo "</center>";
+                echo '<span style="font-size : 0.91em;position:relative; top : 5px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"> <center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
+                echo '</div>';
+            }
             }
             ?>
-        </div>
+      </div>
     </div>
     <div class="col-lg-9 eqLogic husqvarna_map" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
 		<a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
@@ -454,22 +454,25 @@ sendVarToJS('eqType', 'husqvarna_map');
                         <div class="form-group" style="min-height: 10px;">
                         </div>
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">{{Facteur de taille pour le widget Dashboard}}</label>
+                          <label class="col-sm-3 control-label">{{Facteur de taille du widget Dashboard}}</label>
                           <div class="col-lg-3">
-                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_wdg_ratio" placeholder="80%"/>
+                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_wdg_ratio"/>
                           </div>
+                          <label class="col-lg-3">{{Par exemple: 70%}}</label>
                         </div>
                         <div class="form-group">
-                          <label class="col-sm-3 control-label">{{Facteur de taille pour le widget Mobile}}</label>
+                          <label class="col-sm-3 control-label">{{Facteur de taille du widget Mobile}}</label>
                           <div class="col-lg-3">
-                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_wdgm_ratio" placeholder="40%"/>
+                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_wdgm_ratio"/>
                           </div>
+                          <label class="col-lg-3">{{Par exemple: 30%}}</label>
                         </div>
                         <div class="form-group">
                           <label class="col-sm-3 control-label">{{Facteur de taille pour le pannel}}</label>
                           <div class="col-lg-3">
-                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_pan_ratio" placeholder="120%"/>
+                             <input type="text" class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="img_pan_ratio"/>
                           </div>
+                          <label class="col-lg-3">{{Par exemple: 120%}}</label>
                         </div>
                         <div class="form-group" style="min-height: 20px;">
                         </div>

@@ -1,23 +1,24 @@
 <?php
 
 // Liste de constante à partager avec l'utilisation
-define ('PARKED_TIMER',     0);
-define ('OK_LEAVING',       1);
-define ('OK_CUTTING',       2);
-define ('PARKED_PARKED_SELECTED', 3);
-define ('OK_SEARCHING',     4);
-define ('OK_CHARGING',      5);
-define ('PAUSED',           6);
-define ('PARKED_AUTOTIMER', 7);
+// State values for previous API : Kept for compatibility
+define ('PARKED_TIMER',                 0);
+define ('OK_LEAVING',                   1); // used for panel => activities = LEAVING
+define ('OK_CUTTING',                   2); // used for panel => activities = MOWING
+define ('PARKED_PARKED_SELECTED',       3);
+define ('OK_SEARCHING',                 4); // used for panel => activities = GOING_HOME
+define ('OK_CHARGING',                  5); // used for panel => activities = CHARGING
+define ('PAUSED',                       6);
+define ('PARKED_AUTOTIMER',             7);
 define ('COMPLETED_CUTTING_TODAY_AUTO', 8);
-define ('OK_CUTTING_NOT_AUTO', 9);
-define ('OFF_HATCH_OPEN',     10);
-define ('OFF_HATCH_CLOSED',   11);
-define ('ERROR',              12);
-define ('EXECUTING_PARK',     13);
-define ('EXECUTING_START',    14);
-define ('EXECUTING_STOP',     15);
-define ('STS_UNKNOWN',        99);
+define ('OK_CUTTING_NOT_AUTO',          9);
+define ('OFF_HATCH_OPEN',              10);
+define ('OFF_HATCH_CLOSED',            11);
+define ('ERROR',                       12); // used for panel => states = ERROR
+define ('EXECUTING_PARK',              13);
+define ('EXECUTING_START',             14);
+define ('EXECUTING_STOP',              15);
+define ('STS_UNKNOWN',                 99);
 
 // List of "modes" for Mower
 define ('MD_MAIN_AREA',         'MAIN_AREA'        );    // Mower will mow until low battery. Go home and charge. Leave and continue mowing. Week schedule is used. Schedule can be overridden with forced park or forced mowing.
@@ -94,7 +95,7 @@ class husqvarna_map_api_amc {
     10  => "À l'envers",
     11  => "Batterie faible",
     12  => "Batterie vide",
-    13  => "Pas de lecteur",
+    13  => "Pas d'entrainement",
     14  => "Tondeuse relevée",
     15  => "Levé",
     16  => "Coincé dans la borne de recharge",
