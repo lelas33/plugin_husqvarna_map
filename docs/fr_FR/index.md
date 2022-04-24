@@ -75,8 +75,8 @@ Il y a 2 fonctions supplémentaires offerte par la planification du plugin par r
 * Si la fonction "Planification par zones" est utilisée, cocher la case "Gestion de 2 zones", et définissez en utilisant le sélecteur de commandes, les 2 commandes jeedom pour activer chaque zone.
 Définissez ensuite le pourcentage de cycle de tonte à réaliser dans la zone 1, le pourcentage de la zone 2 sera bien sur le complément à 100%. (ces ratios sont à priori en rapport avec la surface relative de chaque zone)
 * Si l'**option météo** est utilisée, il aut alors renseigner les commandes dans la section "Utilisation de la météo". 
-Pour cela, il faut avoir au préalable installé le plugin "Vigilence météo/Pluie à 1h".
-En utilisant le sélecteur de commande, indiquer les 2 liens "Pluie prévue dans l'heure" et "Prévision à 0-5 mn".
+Pour cela, il faut avoir au préalable installé le plugin "Météo France".
+En utilisant le sélecteur de commande, indiquer les 2 liens "Pluie 1h - Pluie prévue dans l heure" et "Pluie 1h - Niveau Pluie 0-5mn".
 * Renseigner ensuite la section "Calendrier de fonctionnement".
 Il est possible de définir 2 plages horaires par jour, pour chaque jour de la semaine.
 (La zone "Initialisation plage horaire 1 ou 2" permet de remplir plus rapidement les informations hebdomadaires en recopiant une même défition sur chaque jour de la semaine).

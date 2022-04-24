@@ -1,42 +1,70 @@
 <?php
-require_once("husqvarna_map_api.class.php");
-define("MOWER_ID", "xxxxxxxxx-yyyyyyyyy");
+require_once("husqvarna_map_api_amc.class.php");
 
 $account = "xx.yy@zz.fr";
-$passwd = "pp";
+$passwd  = "xx";
+$app_key = "xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx";
 
-$session_husqvarna = new husqvarna_map_api();
-$session_husqvarna->login($account, $passwd);
+$session_husqvarna = new husqvarna_map_api_amc();
+$session_husqvarna->login($account, $passwd, $app_key, NULL);
 
-// print("list_robot :\n");
-// var_dump($session_husqvarna->list_robots());
-// print("\n");
 
-// print("control :\n");
-// var_dump($session_husqvarna->control(MOWER_ID, 'START'));
-// print("\n");
-
-print("get_status :\n");
-var_dump($session_husqvarna->get_status(MOWER_ID));
+// Login pour l'API AMC: authentification
+// ======================================
+$login = $session_husqvarna->amc_api_login();
+var_dump($login);
 print("\n");
 
-// print("get_geofence :<pre>");
-// var_dump($session_husqvarna->get_geofence(MOWER_ID));
-// print("</pre>");
+// check login state
+$sl = $session_husqvarna->state_login();
+print("State login : ".$sl."\n");
 
-// print("get_settings :\n");
-// var_dump($session_husqvarna->get_settings(MOWER_ID));
+print("list_robot :\n");
+$ret = $session_husqvarna->list_robots();
+var_dump($ret);
+print("\n");
+
+if ($ret["status"] != "OK") {
+  print("Error : No mower found\n");
+  // $session_husqvarna->logout();  
+}
+
+$mower_id = $ret["mower"][0]["id"];
+print("Mower ID:".$mower_id."\n");
+
+print("Mower status :\n");
+$ret = $session_husqvarna->get_status($mower_id);
+var_dump($ret);
+print("\n");
+
+
+$session_husqvarna->set_debug_api();
+
+// Mower command
+  // * Start + Duration
+  // * ResumeSchedule
+  // * Pause
+  // * Park + Duration
+  // * ParkUntilNextSchedule
+  // * ParkUntilFurtherNotice
+// print("Mower command:\n");
+// $ret = $session_husqvarna->control($mower_id, "Start", 20);
+// $ret = $session_husqvarna->control($mower_id, "ResumeSchedule");
+// $ret = $session_husqvarna->control($mower_id, "Pause");
+// $ret = $session_husqvarna->control($mower_id, "Park", 400);
+// $ret = $session_husqvarna->control($mower_id, "ParkUntilNextSchedule");
+// $ret = $session_husqvarna->control($mower_id, "ParkUntilFurtherNotice");
+// var_dump($ret);
 // print("\n");
+
+// Statistics
+// ==========
+print("Login statistics\n");
+$session_husqvarna->login_app($account, $passwd);
 
 print("get_statistics :\n");
-var_dump($session_husqvarna->get_statistics_app(MOWER_ID));
+var_dump($session_husqvarna->get_statistics_app($mower_id));
 print("\n");
 
-print("get_timers :\n");
-var_dump($session_husqvarna->get_timers(MOWER_ID));
-print("\n");
-var_dump($session_husqvarna->get_timers_app(MOWER_ID));
-print("\n");
-
-$session_husqvarna->logout();
+$session_husqvarna->logout_app();
 ?>

@@ -7,9 +7,9 @@
       jeedom.cmd.update['#id#'] = function(_options) {
         $('.iconCmd#uid#').empty();
         if (_options.display_value == '1') {
-            $('.iconCmd#uid#').append('<i class="icon jeedom2-fdp1-signal5"></i>');
+            $('.iconCmd#uid#').append('<i class="icon_green jeedom2-fdp1-signal5"></i>');
         } else {
-            $('.iconCmd#uid#').append('<i class="icon jeedom2-fdp1-signal0"></i>');
+            $('.iconCmd#uid#').append('<i class="icon_red jeedom2-fdp1-signal0"></i>');
         }
       }
       jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
