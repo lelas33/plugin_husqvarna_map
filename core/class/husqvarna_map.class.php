@@ -23,19 +23,18 @@ require_once dirname(__FILE__) . '/../../3rdparty/husqvarna_map_api_amc.class.ph
 define("MOWER_LOG_FILE", "/../../data/mower_log.txt");
 define("MOWER_IMG_FILE", "/../../data/maison.png");
 const DAY_NAMES = ["dim","lun","mar","mer","jeu","ven","sam"];
-define("MOWER_LOGD_FILE", "/../../data/mower_log2.txt");
 
 // etats du mode de planification
 const MDPLN_IDLE = "Repos";
-const MDPLN_ACT1_T = "Actif plage 1:Tonte";
-const MDPLN_ACT1_C = "Actif plage 1:Charge";
-const MDPLN_ACT2_T = "Actif plage 2:Tonte";
-const MDPLN_ACT2_C = "Actif plage 2:Charge";
+const MDPLN_ACT1_T = "Actif plage A:Tonte";
+const MDPLN_ACT1_C = "Actif plage A:Charge";
+const MDPLN_ACT2_T = "Actif plage B:Tonte";
+const MDPLN_ACT2_C = "Actif plage B:Charge";
 const MDPLN_WPARKED = "Attente retour base";
 // Seuil sur la quantité de pluie dans les 15 mn pour la condition de retour: chiffre entre 3 et 12 (3 pas de pluie, 12 pluie forte sur les 3x5mn)
-const METEO_SEUIL_PLUIE_RETOUR = 6;   // retour du robot si pluie > à ce seuil
+// const METEO_SEUIL_PLUIE_RETOUR = 6;   // retour du robot si pluie > à ce seuil
 // Seuil sur la quantité de pluie dans les 60 mn: chiffre entre 12 et 48 (12 pas de pluie, 48 pluie forte sur les 12x5mn)
-const METEO_SEUIL_PLUIE_DEPART = 18;  // non départ du robot si pluie > à ce seuil
+// const METEO_SEUIL_PLUIE_DEPART = 18;  // non départ du robot si pluie > à ce seuil
 
 // ==============================
 // Classe du plugin Husqvarna MAP
@@ -344,6 +343,7 @@ class husqvarna_map extends eqLogic {
           $next_start_ts = $mower_ret["planner"]->nextStartTimestamp;
           $offsetTimeStamp = date("Z");
           $localTimeStamp = date('d M Y H:i', (intval($next_start_ts)/1000) - $offsetTimeStamp );
+          // $localTimeStamp = date('d M Y H:i', intval($next_start_ts)/1000);
           if (intval($next_start_ts) == 0)
             $cmd->event("--");
           else
@@ -364,64 +364,97 @@ class husqvarna_map extends eqLogic {
           $cmd->event($state_visual);
 
           // Infos "positions"
+          log::add('husqvarna_map','debug','MAJ Positions du robot');
           $cmd = $this->getCmd(null, "lastLocations");
-          if ((($mower_state == ST_IN_OPERATION) && ($mower_activity != AC_PARKED_IN_CS)) || ($rfh == 1)) {  // GPS logging done if mode is not PARKED
-            log::add('husqvarna_map','debug','MAJ Positions du robot');
-            // compute GPS position for each point on image
-            $map_tl = $this->getConfiguration('gps_tl');
-            $map_br = $this->getConfiguration('gps_br');
-            $map_wd_ratio = $this->getConfiguration('img_wdg_ratio');
-            $map_wdm_ratio= $this->getConfiguration('img_wdgm_ratio');
-            $map_wd = round($this->getConfiguration('img_loc_width'));
-            $map_he = round($this->getConfiguration('img_loc_height'));
-            log::add('husqvarna_map','debug',"Refresh DBG:image pos=".$map_tl." / ".$map_br);
-            log::add('husqvarna_map','debug',"Refresh DBG:image size=".$map_wd." / ".$map_he);
-            list($map_t, $map_l) = explode(",", $map_tl);
-            list($map_b, $map_r) = explode(",", $map_br);
-            $lat_height = $map_b - $map_t;
-            $lon_width  = $map_r - $map_l;
-            $gps_pos = $map_wd.",".$map_he.'/'.$map_wd_ratio.",".$map_wdm_ratio.'/';  // passe la taille de l'image au widget, ainsi que les ratios dashboard et mobile
-            $gps_log_full = "";
-            for ($i=0; $i<50; $i++) {
-                $gps_lat = floatval($mower_ret["positions"][$i]->{"latitude"});
-                $gps_lon = floatval($mower_ret["positions"][$i]->{"longitude"});
-                $xpos = round($map_wd * ($gps_lon-$map_l)/$lon_width);
-                $ypos = round($map_he * ($gps_lat-$map_t)/$lat_height);
-                $gps_pos = $gps_pos.$xpos.",".$ypos.'/';
-                if ($i < 49)
-                  $gps_log_full = $gps_log_full.$gps_lat.",".$gps_lon.'/';
-                else
-                  $gps_log_full = $gps_log_full.$gps_lat.",".$gps_lon."\n";
-                if ($i == 0) {
-                  // state encoding for compatibility with previous log format
-                  $mw_state = STS_UNKNOWN;
-                  if     ($mower_activity == AC_LEAVING)    $mw_state = OK_LEAVING;
-                  elseif ($mower_activity == AC_MOWING)     $mw_state = OK_CUTTING;
-                  elseif ($mower_activity == AC_GOING_HOME) $mw_state = OK_SEARCHING;
-                  elseif ($mower_activity == AC_CHARGING)   $mw_state = OK_CHARGING;
-                  elseif (($mower_state == ST_ERROR) || ($mower_state == ST_FATAL_ERROR) || ($mower_state == ST_ERROR_AT_POWER_UP)) $mw_state = ERROR;
-                  $gps_log_dt = time().",".$mw_state.",".$gps_lat.",".$gps_lon."\n";
-                  $gps_posx = $xpos;
-                  $gps_posy = $ypos;
-                }
-            }
-            $log_fn = dirname(__FILE__).MOWER_LOGD_FILE;
-            file_put_contents($log_fn, $gps_log_full, FILE_APPEND | LOCK_EX);
-
-            // log::add('husqvarna_map','debug',"Refresh DBG:Gps_pos=".$gps_pos);
-            $cmd->event($gps_pos);
-            // Stores mower position on map
-            $cmd = $this->getCmd(null, "gps_posx");
-            $cmd->event($gps_posx);
-            $cmd = $this->getCmd(null, "gps_posy");
-            $cmd->event($gps_posy);
-            // Log GPS position for statistics (if valid)
-            if (($mower_state == ST_IN_OPERATION) && ($mower_activity != AC_PARKED_IN_CS)) {
-              log::add('husqvarna_map','debug',"Refresh log recording Gps_dt=".$gps_log_dt);
-              $log_fn = dirname(__FILE__).MOWER_LOG_FILE;
-              file_put_contents($log_fn, $gps_log_dt, FILE_APPEND | LOCK_EX);
-            }
+          // compute GPS position for each point on image
+          $map_tl = $this->getConfiguration('gps_tl');
+          $map_br = $this->getConfiguration('gps_br');
+          $map_wd_ratio = $this->getConfiguration('img_wdg_ratio');
+          $map_wdm_ratio= $this->getConfiguration('img_wdgm_ratio');
+          $map_wd = round($this->getConfiguration('img_loc_width'));
+          $map_he = round($this->getConfiguration('img_loc_height'));
+          log::add('husqvarna_map','debug',"Refresh DBG:image pos=".$map_tl." / ".$map_br);
+          log::add('husqvarna_map','debug',"Refresh DBG:image size=".$map_wd." / ".$map_he);
+          list($map_t, $map_l) = explode(",", $map_tl);
+          list($map_b, $map_r) = explode(",", $map_br);
+          $lat_height = $map_b - $map_t;
+          $lon_width  = $map_r - $map_l;
+          $gps_pos = $map_wd.",".$map_he.'/'.$map_wd_ratio.",".$map_wdm_ratio.'/';  // passe la taille de l'image au widget, ainsi que les ratios dashboard et mobile
+          $gps_log_full = "";
+          for ($i=0; $i<50; $i++) {
+              $gps_lat = floatval($mower_ret["positions"][$i]->{"latitude"});
+              $gps_lon = floatval($mower_ret["positions"][$i]->{"longitude"});
+              $xpos = round($map_wd * ($gps_lon-$map_l)/$lon_width);
+              $ypos = round($map_he * ($gps_lat-$map_t)/$lat_height);
+              $gps_pos = $gps_pos.$xpos.",".$ypos.'/';
+              if ($i < 49)
+                $gps_log_full = $gps_log_full.$gps_lat.",".$gps_lon.'|';
+              else
+                $gps_log_full = $gps_log_full.$gps_lat.",".$gps_lon;
+              if ($i == 0) {
+                // state encoding for compatibility with previous log format
+                // $mw_state = STS_UNKNOWN;
+                // if     ($mower_activity == AC_LEAVING)    $mw_state = OK_LEAVING;
+                // elseif ($mower_activity == AC_MOWING)     $mw_state = OK_CUTTING;
+                // elseif ($mower_activity == AC_GOING_HOME) $mw_state = OK_SEARCHING;
+                // elseif ($mower_activity == AC_CHARGING)   $mw_state = OK_CHARGING;
+                // elseif (($mower_state == ST_ERROR) || ($mower_state == ST_FATAL_ERROR) || ($mower_state == ST_ERROR_AT_POWER_UP)) $mw_state = ERROR;
+                // $gps_log_dt = time().",".$mw_state.",".$gps_lat.",".$gps_lon."\n";
+                $gps_posx = $xpos;
+                $gps_posy = $ypos;
+              }
           }
+          // gestion de l'historique des positions GPS pour un log plus precis
+          $last_gps_histo = $cmd->getConfiguration('histo_gps');
+          if ($gps_log_full != $last_gps_histo) {
+            // Identification des nouveaux points GPS dans le dernier LOG
+            $last_gps_array = explode("|", $gps_log_full);
+            $prev_gps_array = explode("|", $last_gps_histo);
+            $found_idx = -1;
+            $idx = 0;
+            while (($found_idx == -1) and ($idx < count($last_gps_array))){
+              if ($last_gps_array[$idx++] == $prev_gps_array[0]) {
+                $found_idx = $idx-1;
+              }
+            }
+            if ($found_idx == -1) {
+              log::add('husqvarna_map','error',"Historique GPS: Pas de cohérence trouvée avec log précédent");
+            }
+            else {
+              log::add('husqvarna_map','debug',"Log historique GPS:Nb nouveaux points=".$found_idx);
+              log::add('husqvarna_map','debug',"Historique GPS:Previous GPS=".$last_gps_histo);
+              log::add('husqvarna_map','debug',"Historique GPS:New      GPS=".$gps_log_full);
+              // enregistrement des nouveaux points dans le fichier de log
+              // .. state encoding for compatibility with previous log format
+              if (($mower_state == ST_IN_OPERATION) && ($mower_activity != AC_PARKED_IN_CS)) {
+                $mw_state = STS_UNKNOWN;
+                if     ($mower_activity == AC_LEAVING)    $mw_state = OK_LEAVING;
+                elseif ($mower_activity == AC_MOWING)     $mw_state = OK_CUTTING;
+                elseif ($mower_activity == AC_GOING_HOME) $mw_state = OK_SEARCHING;
+                elseif ($mower_activity == AC_CHARGING)   $mw_state = OK_CHARGING;
+                elseif (($mower_state == ST_ERROR) || ($mower_state == ST_FATAL_ERROR) || ($mower_state == ST_ERROR_AT_POWER_UP)) $mw_state = ERROR;
+                $ts_now = time();
+                $log_fn = dirname(__FILE__).MOWER_LOG_FILE;
+                for ($idx = 0; $idx < $found_idx; $idx++) {
+                  $gps_lat = floatval($mower_ret["positions"][$found_idx-1-$idx]->{"latitude"});
+                  $gps_lon = floatval($mower_ret["positions"][$found_idx-1-$idx]->{"longitude"});
+                  $gps_log_dt = $ts_now.",".$mw_state.",".$gps_lat.",".$gps_lon."\n";
+                  file_put_contents($log_fn, $gps_log_dt, FILE_APPEND | LOCK_EX);
+                  // log::add('husqvarna_map','debug',"Refresh log recording Gps_dt=".$gps_log_dt);
+                }
+              }
+            }
+            $cmd->setConfiguration ('histo_gps', $gps_log_full);
+            $cmd->save();
+          }
+
+          log::add('husqvarna_map','debug',"Refresh DBG:Gps_pos=".$gps_pos);
+          $cmd->event($gps_pos);
+          // Stores mower position on map
+          $cmd = $this->getCmd(null, "gps_posx");
+          $cmd->event($gps_posx);
+          $cmd = $this->getCmd(null, "gps_posy");
+          $cmd->event($gps_posy);
         }
         
         // mise à jour des infos de statistiques
@@ -467,248 +500,281 @@ class husqvarna_map extends eqLogic {
         $mower_id = $this->getLogicalId();
         $cmd_connected = $this->getCmd(null, "connected");
         $last_login = $cmd_connected->getConfiguration('save_auth');
-        // if ($pl_on == 1) {
-          $planning_state_cmd = $this->getCmd(null, "planning_state");
-          $pln_state = $planning_state_cmd->execCmd();
-          log::add('husqvarna_map','debug',"MAJ Planification: planning_state=".$pln_state."/Heure courante:".$cur_hm);
-          $cmd = $this->getCmd(null, 'meteo_activ');
-          $pl_meteo = $cmd->execCmd();
-          $multizone = $this->getConfiguration("enable_2_areas");
-          if ($pl_meteo == 1) {
-            // recuperation de la pluie dans les 15mn et dans l'heure
-            $cmd_name = str_replace('#', '', $this->getConfiguration('info_pluie_5mn'));
-            $info_pluie_5m  = cmd::byId($cmd_name);
-            $info_pluie_10m = cmd::byId(str_replace('0-5', '5-10', $cmd_name));
-            $info_pluie_15m = cmd::byId(str_replace('0-5', '10-15', $cmd_name));
-            $info_pluie_1h  = cmd::byId(str_replace('#', '', $this->getConfiguration('info_pluie_1h')));
-            if (!is_object($info_pluie_5m) or !is_object($info_pluie_10m) or !is_object($info_pluie_15m) or !is_object($info_pluie_1h)) {
-              throw new Exception(__('Impossible de trouver les commandes Info pluie', __FILE__));
+        $planning_state_cmd = $this->getCmd(null, "planning_state");
+        $pln_state = $planning_state_cmd->execCmd();
+        log::add('husqvarna_map','debug',"MAJ Planification: planning_state=".$pln_state."/Heure courante:".$cur_hm);
+        $cmd = $this->getCmd(null, 'meteo_activ');
+        $pl_meteo = $cmd->execCmd();
+        $multizone = $this->getConfiguration("enable_2_areas");
+        $pl_prev_meteo = 0;
+        $pl_mesu_meteo = 0;
+        if ($pl_meteo == 1) {
+          // recuperation des infos pour l'utilisation de la prevision meteo: pluie dans les 15mn et dans l'heure
+          $cmd_name = str_replace('#', '', $this->getConfiguration('info_pluie_5mn'));
+          $info_pluie_5m  = cmd::byId($cmd_name);
+          $info_pluie_10m = cmd::byId(str_replace('0-5', '5-10', $cmd_name));
+          $info_pluie_15m = cmd::byId(str_replace('0-5', '10-15', $cmd_name));
+          $info_pluie_1h  = cmd::byId(str_replace('#', '', $this->getConfiguration('info_pluie_1h')));
+          // verification des options pour l'utilisation de la prevision meteo
+          if (!is_object($info_pluie_5m) or !is_object($info_pluie_10m) or !is_object($info_pluie_15m) or !is_object($info_pluie_1h)) {
+            log::add('husqvarna_map','info',"Impossible de trouver les commandes Info pluie pour la prevision meteo");
+            // throw new Exception(__('Impossible de trouver les commandes Info pluie pour la prevision meteo', __FILE__));
+          }
+          else {
+            $pluie_15m = intval($info_pluie_5m->execCmd()) + intval($info_pluie_10m->execCmd()) + intval($info_pluie_15m->execCmd());
+            $pluie_1h  = intval($info_pluie_1h->execCmd());
+            $th_pluie_1h  = intval($this->getConfiguration('thi_pluie_1h'));  // seuil pluie 1h
+            $th_pluie_15m = intval($this->getConfiguration('thi_pluie_5mn')); // seuil pluie 15mn
+            if (($pluie_15m == 0) or ($pluie_1h == 0) or ($th_pluie_15m == 0) or ($th_pluie_1h == 0)) {
+              log::add('husqvarna_map','info',"Erreur dans les données de prévision de pluie => Sur 15mn:".$pluie_15m." / Sur 1h:".$pluie_1h." / Seuil 15mn:".$th_pluie_15m." / Seuil 1h:".$th_pluie_1h);
             }
-            $pluie_15m = $info_pluie_5m->execCmd() + $info_pluie_10m->execCmd() + $info_pluie_15m->execCmd();
-            $pluie_1h  = $info_pluie_1h->execCmd();
-            log::add('husqvarna_map','debug',"Pluie dans les 15mn:".$pluie_15m." / 1h:".$pluie_1h);
-          }
-
-          // recuperation de la definition des plages horaires
-          $day = DAY_NAMES[intval(date("w"))];
-          $pl_start = $day."_ts1_begin";
-          $pl_end   = $day."_ts1_end";
-          $pl_zone  = $day."_ts1_zone";
-          $pl_enable= $day."_en_ts1";
-          $pl1_ts = $this->getConfiguration($pl_start);
-          $pl1_te = $this->getConfiguration($pl_end);
-          if (($pl1_ts) == "")
-            $pl1_ts = 0;
-          else {
-            list($hr,$mn) = explode(":", $pl1_ts);
-            $pl1_ts = intval($hr*60)+intval($mn);
-          }
-          if (($pl1_te) == "")
-            $pl1_te = 0;
-          else {
-            list($hr,$mn) = explode(":", $pl1_te);
-            $pl1_te = intval($hr*60)+intval($mn);
-          }
-          $pl1_zn = intval($this->getConfiguration($pl_zone));
-          $pl1_en = intval($this->getConfiguration($pl_enable));
-          log::add('husqvarna_map','debug',"Planing: plage1=".$pl1_ts."/".$pl1_te."/".$pl1_zn."/".$pl1_en);
-          $pl_start = str_replace("1", "2", $pl_start);
-          $pl_end   = str_replace("1", "2", $pl_end);
-          $pl_zone  = str_replace("1", "2", $pl_zone);
-          $pl_enable= str_replace("1", "2", $pl_enable);
-          $pl2_ts = $this->getConfiguration($pl_start);
-          $pl2_te = $this->getConfiguration($pl_end);
-          if (($pl2_ts) == "")
-            $pl2_ts = 0;
-          else {
-            list($hr,$mn) = explode(":", $pl2_ts);
-            $pl2_ts = intval($hr*60)+intval($mn);
-          }
-          if (($pl2_te) == "")
-            $pl2_te = 0;
-          else {
-            list($hr,$mn) = explode(":", $pl2_te);
-            $pl2_te = intval($hr*60)+intval($mn);
-          }
-          $pl2_zn = intval($this->getConfiguration($pl_zone));
-          $pl2_en = intval($this->getConfiguration($pl_enable));
-          log::add('husqvarna_map','debug',"Planing: plage2=".$pl2_ts."/".$pl2_te."/".$pl2_zn."/".$pl2_en);
-          // gestion de la panification du robot
-          $nb_clycle_tot_cmd = $this->getCmd(null, "planning_nbcy_tot");
-          $nb_clycle_tot = $nb_clycle_tot_cmd->execCmd();
-          $nb_clycle_z1_cmd = $this->getCmd(null, "planning_nbcy_z1");
-          $nb_clycle_z1 = $nb_clycle_z1_cmd->execCmd();
-          $mode_changed = 0;
-          $stat_changed = 0;
-          if (($day == "lun") and ($cur_hm == 0)) {
-            // Clear stat sur zone1 le lundi à 0h00
-            $nb_clycle_tot = 0;
-            $nb_clycle_z1 = 0;
-            $stat_changed = 1;
-          }
-          if ($pln_state == "") {
-            $pln_state = MDPLN_IDLE;
-            $mode_changed = 1;
-          }
-          else {
-            switch ($pln_state) {
-              case MDPLN_IDLE: // mode repos (en attente d'une plage horaire active)  METEO_SEUIL_PLUIE_DEPART
-                  if (($pl_on == 1) and ($pl1_en == 1) and ($cur_hm>=$pl1_ts) and ($cur_hm<$pl1_te) and
-                     (($pl_meteo == 0) or (($pl_meteo == 1) and ($pluie_1h<=METEO_SEUIL_PLUIE_DEPART) and ($pluie_15m<METEO_SEUIL_PLUIE_RETOUR)))) {
-                    $pln_state = MDPLN_ACT1_T;
-                    $mode_changed = 1;
-                    // Sélection de la zone choisie
-                    if ($multizone == 1) {
-                      $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
-                    }
-                    // départ tondeuse sur plage horaire 1
-                    // $order = $session_husqvarna->control($mower_id, CMD_START, 20*60);  // 20h maxi
-                    $this->mower_command($mower_id, CMD_START, $last_login);
-
-                    log::add('husqvarna_map','info',"Départ tonte sur plage horaire 1. (Ret=".$order->info["http_code"].")");
-                    $nb_clycle_tot += 1;
-                    if ($zone == 1) {
-                      $nb_clycle_z1 += 1;
-                    }
-                    $stat_changed = 1;
-                  }
-                  elseif (($pl_on == 1) and ($pl2_en == 1) and ($cur_hm>=$pl2_ts) and ($cur_hm<$pl2_te) and 
-                         (($pl_meteo == 0) or (($pl_meteo == 1) and ($pluie_1h<=METEO_SEUIL_PLUIE_DEPART) and ($pluie_15m<METEO_SEUIL_PLUIE_RETOUR)))) {
-                    $pln_state = MDPLN_ACT2_T;
-                    $mode_changed = 1;
-                    // Sélection de la zone choisie
-                    if ($multizone == 1) {
-                      $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
-                    }
-                    // départ tondeuse sur plage horaire 2
-                    // $order = $session_husqvarna->control($mower_id, CMD_START, 20*60);  // 20h maxi
-                    $this->mower_command($mower_id, CMD_START, $last_login);
-                    log::add('husqvarna_map','info',"Départ tonte sur plage horaire 2. (Ret=".$order->info["http_code"].")");
-                    $nb_clycle_tot += 1;
-                    if ($zone == 1) {
-                      $nb_clycle_z1 += 1;
-                    }
-                    $stat_changed = 1;
-                  }
-                  break;
-              case MDPLN_ACT1_T: // Robot en action sur la plage horaire 1 (phase tonte)
-                  if ((($pl1_en == 1) and ($cur_hm>$pl1_te)) or ($pl_on == 0) or (($pl_meteo == 1) and ($pluie_15m>=METEO_SEUIL_PLUIE_RETOUR))) {
-                    $pln_state = MDPLN_WPARKED;
-                    $mode_changed = 1;
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-
-                    log::add('husqvarna_map','info',"Fin de tonte sur plage horaire 1. (Ret=".$order->info["http_code"].")");
-                    if (($pl_meteo == 1) and ($pluie_15m>=METEO_SEUIL_PLUIE_RETOUR))
-                      log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie sur 15 minutes:".$pluie_15m);
-                  }
-                  elseif (($mower_activity == AC_CHARGING) and ($battery <= 50)) {
-                    $pln_state = MDPLN_ACT1_C;
-                    $mode_changed = 1;
-                    if ($multizone == 1) {
-                      $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
-                    }
-                    log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire 1.");
-                  }
-                  break;
-              case MDPLN_ACT1_C: // Robot en action sur la plage horaire 1 (phase chargement)
-                  if ($pl_on == 0) { // arret de la planification
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-                    $pln_state = MDPLN_IDLE;
-                    $mode_changed = 1;
-                  }
-                  elseif ($battery >= 80) {
-                    $pln_state = MDPLN_ACT1_T;
-                    $mode_changed = 1;
-                    if ($multizone == 1) {
-                      $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
-                    }
-                    log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire 1.");
-                    $nb_clycle_tot += 1;
-                    if ($zone == 1) {
-                      $nb_clycle_z1 += 1;
-                    }
-                    $stat_changed = 1;
-                  }
-                  break;
-              case MDPLN_ACT2_T: // Robot en action sur la plage horaire 2 (phase tonte)
-                  if ((($pl2_en == 1) and ($cur_hm>$pl2_te)) or ($pl_on == 0) or (($pl_meteo == 1) and ($pluie_15m>=METEO_SEUIL_PLUIE_RETOUR))) {
-                    $pln_state = MDPLN_WPARKED;
-                    $mode_changed = 1;
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-                    log::add('husqvarna_map','info',"Fin de tonte sur plage horaire 2. (Ret=".$order->info["http_code"].")");
-                    if (($pl_meteo == 1) and ($pluie_15m>=METEO_SEUIL_PLUIE_RETOUR))
-                      log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie sur 15 minutes:".$pluie_15m);
-                  }
-                  elseif (($mower_activity == AC_CHARGING) and ($battery <= 50)) {
-                    $pln_state = MDPLN_ACT2_C;
-                    $mode_changed = 1;
-                    if ($multizone == 1) {
-                      $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
-                    }
-                    log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire 2.");
-                  }
-                  break;
-              case MDPLN_ACT2_C: // Robot en action sur la plage horaire 2 (phase chargement)
-                  if ($pl_on == 0) { // arret de la planification
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-                    $pln_state = MDPLN_IDLE;
-                    $mode_changed = 1;
-                  }
-                  elseif ($battery >= 80) {
-                    $pln_state = MDPLN_ACT2_T;
-                    $mode_changed = 1;
-                    if ($multizone == 1) {
-                      $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
-                    }
-                    log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire 2.");
-                    $nb_clycle_tot += 1;
-                    if ($zone == 1) {
-                      $nb_clycle_z1 += 1;
-                    }
-                    $stat_changed = 1;
-                  }
-                  break;
-              case MDPLN_WPARKED: // Attente retour base
-                  if ($mower_activity == AC_PARKED_IN_CS) {
-                    $pln_state = MDPLN_IDLE;
-                    $mode_changed = 1;
-                    if ($multizone == 1) {
-                      $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
-                    }
-                    log::add('husqvarna_map','info',"Robot rentré à la base. (Activity=".$mower_activity.")");
-                  }
-                  elseif (($minute %10) == 0) { // Rappel de la commande toutes les 10 ms
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-                    log::add('husqvarna_map','info',"Rappel retour à la base");
-                  }
-                  elseif ($pl_on == 0) { // arret de la planification
-                    // Park de la tondeuse
-                    // $order = $session_husqvarna->control($mower_id, CMD_PARKUNTILFURTHERNOTICE);
-                    $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
-                    $pln_state = MDPLN_IDLE;
-                    $mode_changed = 1;
-                  }
-                  break;
+            else {
+              $pl_prev_meteo = 1;
+              log::add('husqvarna_map','debug',"Données pour la prévision de pluie => Sur 15mn:".$pluie_15m." / Sur 1h:".$pluie_1h." / Seuil 15mn:".$th_pluie_15m." / Seuil 1h:".$th_pluie_1h);
             }
           }
-          if ($mode_changed == 1) {
-            $planning_state_cmd->event($pln_state);              
+          // recuperation des infos pour l'utilisation de la mesure de pluie par pluviometre
+          $cmd_name = str_replace('#', '', $this->getConfiguration('mesure_pluie_1h'));
+          $mesure_pluie_1h  = cmd::byId($cmd_name);
+          // verification des options pour l'utilisation de la mesure de pluie par pluviometre
+          if (!is_object($mesure_pluie_1h)) {
+            log::add('husqvarna_map','info',"Impossible de trouver la commande pour la mesure par pluviomètre");
+            // throw new Exception(__('Impossible de trouver les commandes Info pluie pour la prevision meteo', __FILE__));
           }
-          if ($stat_changed == 1) {
-            $nb_clycle_tot_cmd->event($nb_clycle_tot);
-            $nb_clycle_z1_cmd->event($nb_clycle_z1);
+          else {
+            $mpluie_1h = floatval($mesure_pluie_1h->execCmd());
+            $thm_pluie_1h  = floatval($this->getConfiguration('thm_pluie_1h'));  // seuil pluie 1h pour pluviometre
+            if (($thm_pluie_1h == 0.0)) {
+              log::add('husqvarna_map','info',"Erreur dans les données pour la mesure de pluie => Pluviomètre 1h:".$mpluie_1h." mm / Seuil 1h:".$thm_pluie_1h." mm");
+            }
+            else {
+              $pl_mesu_meteo = 1;
+              log::add('husqvarna_map','debug',"Données pour la mesure de pluie => Pluviomètre 1h:".$mpluie_1h." mm / Seuil 1h:".$thm_pluie_1h." mm");
+            }
           }
-        // }
+        }
+
+        // recuperation de la definition des plages horaires
+        $day = DAY_NAMES[intval(date("w"))];
+        $pl_start = $day."_ts1_begin";
+        $pl_end   = $day."_ts1_end";
+        $pl_zone  = $day."_ts1_zone";
+        $pl_enable= $day."_en_ts1";
+        $pl1_ts = $this->getConfiguration($pl_start);
+        $pl1_te = $this->getConfiguration($pl_end);
+        if (($pl1_ts) == "")
+          $pl1_ts = 0;
+        else {
+          list($hr,$mn) = explode(":", $pl1_ts);
+          $pl1_ts = intval($hr*60)+intval($mn);
+        }
+        if (($pl1_te) == "")
+          $pl1_te = 0;
+        else {
+          list($hr,$mn) = explode(":", $pl1_te);
+          $pl1_te = intval($hr*60)+intval($mn);
+        }
+        $pl1_zn = intval($this->getConfiguration($pl_zone));
+        $pl1_en = intval($this->getConfiguration($pl_enable));
+        log::add('husqvarna_map','debug',"Planing: plage1=".$pl1_ts."/".$pl1_te."/".$pl1_zn."/".$pl1_en);
+        $pl_start = str_replace("1", "2", $pl_start);
+        $pl_end   = str_replace("1", "2", $pl_end);
+        $pl_zone  = str_replace("1", "2", $pl_zone);
+        $pl_enable= str_replace("1", "2", $pl_enable);
+        $pl2_ts = $this->getConfiguration($pl_start);
+        $pl2_te = $this->getConfiguration($pl_end);
+        if (($pl2_ts) == "")
+          $pl2_ts = 0;
+        else {
+          list($hr,$mn) = explode(":", $pl2_ts);
+          $pl2_ts = intval($hr*60)+intval($mn);
+        }
+        if (($pl2_te) == "")
+          $pl2_te = 0;
+        else {
+          list($hr,$mn) = explode(":", $pl2_te);
+          $pl2_te = intval($hr*60)+intval($mn);
+        }
+        $pl2_zn = intval($this->getConfiguration($pl_zone));
+        $pl2_en = intval($this->getConfiguration($pl_enable));
+        log::add('husqvarna_map','debug',"Planing: plage2=".$pl2_ts."/".$pl2_te."/".$pl2_zn."/".$pl2_en);
+        // gestion de la panification du robot
+        $nb_clycle_tot_cmd = $this->getCmd(null, "planning_nbcy_tot");
+        $nb_clycle_tot = $nb_clycle_tot_cmd->execCmd();
+        $nb_clycle_z1_cmd = $this->getCmd(null, "planning_nbcy_z1");
+        $nb_clycle_z1 = $nb_clycle_z1_cmd->execCmd();
+        $mode_changed = 0;
+        $stat_changed = 0;
+        if (($day == "lun") and ($cur_hm == 0)) {
+          // Clear stat sur zone1 le lundi à 0h00
+          $nb_clycle_tot = 0;
+          $nb_clycle_z1 = 0;
+          $stat_changed = 1;
+        }
+        if ($pln_state == "") {
+          $pln_state = MDPLN_IDLE;
+          $mode_changed = 1;
+        }
+        else {
+          switch ($pln_state) {
+            case MDPLN_IDLE: // mode repos (en attente d'une plage horaire active)  $mpluie_1h." mm / Seuil 1h:".$thm_pluie_1h
+                if (($pl_on == 1) and ($pl1_en == 1) and ($cur_hm >= $pl1_ts) and ($cur_hm < $pl1_te) and
+                   (($pl_meteo == 0) or 
+                   (($pl_meteo == 1) and (($pl_prev_meteo == 0) or ($pl_prev_meteo == 1) and ($pluie_1h <= $th_pluie_1h) and ($pluie_15m < $th_pluie_15m))) or
+                   (($pl_meteo == 1) and (($pl_mesu_meteo == 0) or ($pl_mesu_meteo == 1) and ($mpluie_1h <= $thm_pluie_1h))) )) {
+                  $pln_state = MDPLN_ACT1_T;
+                  $mode_changed = 1;
+                  // Sélection de la zone choisie
+                  if ($multizone == 1) {
+                    $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
+                  }
+                  // départ tondeuse sur plage horaire A
+                  $this->mower_command($mower_id, CMD_START, $last_login);
+                  log::add('husqvarna_map','info',"Départ tonte sur plage horaire A (zone: ".$zone.")");
+                  $nb_clycle_tot += 1;
+                  if ($zone == 1) {
+                    $nb_clycle_z1 += 1;
+                  }
+                  $stat_changed = 1;
+                }
+                elseif (($pl_on == 1) and ($pl2_en == 1) and ($cur_hm >= $pl2_ts) and ($cur_hm < $pl2_te) and 
+                       (($pl_meteo == 0) or 
+                       (($pl_meteo == 1) and (($pl_prev_meteo == 0) or ($pl_prev_meteo == 1) and ($pluie_1h <= $th_pluie_1h) and ($pluie_15m < $th_pluie_15m))) or
+                       (($pl_meteo == 1) and (($pl_mesu_meteo == 0) or ($pl_mesu_meteo == 1) and ($mpluie_1h <= $thm_pluie_1h))) )) {
+                  $pln_state = MDPLN_ACT2_T;
+                  $mode_changed = 1;
+                  // Sélection de la zone choisie
+                  if ($multizone == 1) {
+                    $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
+                  }
+                  // départ tondeuse sur plage horaire B
+                  $this->mower_command($mower_id, CMD_START, $last_login);
+                  log::add('husqvarna_map','info',"Départ tonte sur plage horaire B (zone: ".$zone.")");
+                  $nb_clycle_tot += 1;
+                  if ($zone == 1) {
+                    $nb_clycle_z1 += 1;
+                  }
+                  $stat_changed = 1;
+                }
+                break;
+            case MDPLN_ACT1_T: // Robot en action sur la plage horaire A (phase tonte)
+                if ((($pl1_en == 1) and ($cur_hm > $pl1_te)) or ($pl_on == 0) or 
+                    (($pl_meteo == 1) and ($pl_prev_meteo == 1) and ($pluie_15m >= $th_pluie_15m)) or
+                    (($pl_meteo == 1) and ($pl_mesu_meteo == 1) and ($mpluie_1h >= $thm_pluie_1h))) {
+                  $pln_state = MDPLN_WPARKED;
+                  $mode_changed = 1;
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  log::add('husqvarna_map','info',"Fin de tonte sur plage horaire A.");
+                  if (($pl_meteo == 1) and ($pl_prev_meteo == 1) and ($pluie_15m >= $th_pluie_15m))
+                    log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie prévue sur 15 minutes:".$pluie_15m);
+                  elseif (($pl_meteo == 1) and ($pl_mesu_meteo == 1) and ($mpluie_1h >= $thm_pluie_1h))
+                    log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie mesurée sur 1 heure:".$mpluie_1h);
+                }
+                elseif (($mower_activity == AC_CHARGING) and ($battery <= 50)) {
+                  $pln_state = MDPLN_ACT1_C;
+                  $mode_changed = 1;
+                  if ($multizone == 1) {
+                    $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
+                  }
+                  log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire A.");
+                }
+                break;
+            case MDPLN_ACT1_C: // Robot en action sur la plage horaire A (phase chargement)
+                if ($pl_on == 0) { // arret de la planification
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  $pln_state = MDPLN_IDLE;
+                  $mode_changed = 1;
+                }
+                elseif ($battery >= 80) {
+                  $pln_state = MDPLN_ACT1_T;
+                  $mode_changed = 1;
+                  if ($multizone == 1) {
+                    $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
+                  }
+                  log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire A (zone: ".$zone.")");
+                  $nb_clycle_tot += 1;
+                  if ($zone == 1) {
+                    $nb_clycle_z1 += 1;
+                  }
+                  $stat_changed = 1;
+                }
+                break;
+            case MDPLN_ACT2_T: // Robot en action sur la plage horaire B (phase tonte)
+                if ((($pl2_en == 1) and ($cur_hm > $pl2_te)) or ($pl_on == 0) or 
+                    (($pl_meteo == 1) and ($pl_prev_meteo == 1) and ($pluie_15m >= $th_pluie_15m)) or
+                    (($pl_meteo == 1) and ($pl_mesu_meteo == 1) and ($mpluie_1h >= $thm_pluie_1h))) {
+                  $pln_state = MDPLN_WPARKED;
+                  $mode_changed = 1;
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  log::add('husqvarna_map','info',"Fin de tonte sur plage horaire B.");
+                  if (($pl_meteo == 1) and ($pl_prev_meteo == 1) and ($pluie_15m >= $th_pluie_15m))
+                    log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie prévue sur 15 minutes:".$pluie_15m);
+                  elseif (($pl_meteo == 1) and ($pl_mesu_meteo == 1) and ($mpluie_1h >= $thm_pluie_1h))
+                    log::add('husqvarna_map','info',"... Retour à la base pour raison de pluie mesurée sur 1 heure:".$mpluie_1h);
+                }
+                elseif (($mower_activity == AC_CHARGING) and ($battery <= 50)) {
+                  $pln_state = MDPLN_ACT2_C;
+                  $mode_changed = 1;
+                  if ($multizone == 1) {
+                    $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
+                  }
+                  log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire B.");
+                }
+                break;
+            case MDPLN_ACT2_C: // Robot en action sur la plage horaire B (phase chargement)
+                if ($pl_on == 0) { // arret de la planification
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  $pln_state = MDPLN_IDLE;
+                  $mode_changed = 1;
+                }
+                elseif ($battery >= 80) {
+                  $pln_state = MDPLN_ACT2_T;
+                  $mode_changed = 1;
+                  if ($multizone == 1) {
+                    $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
+                  }
+                  log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire B (zone: ".$zone.")");
+                  $nb_clycle_tot += 1;
+                  if ($zone == 1) {
+                    $nb_clycle_z1 += 1;
+                  }
+                  $stat_changed = 1;
+                }
+                break;
+            case MDPLN_WPARKED: // Attente retour base
+                if ($mower_activity == AC_PARKED_IN_CS) {
+                  $pln_state = MDPLN_IDLE;
+                  $mode_changed = 1;
+                  if ($multizone == 1) {
+                    $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
+                  }
+                  log::add('husqvarna_map','info',"Robot rentré à la base. (Activity=".$mower_activity.")");
+                }
+                elseif (($minute %10) == 0) { // Rappel de la commande toutes les 10 ms
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  log::add('husqvarna_map','info',"Rappel retour à la base");
+                }
+                elseif ($pl_on == 0) { // arret de la planification
+                  // Park de la tondeuse
+                  $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
+                  $pln_state = MDPLN_IDLE;
+                  $mode_changed = 1;
+                }
+                break;
+          }
+        }
+        if ($mode_changed == 1) {
+          $planning_state_cmd->event($pln_state);              
+        }
+        if ($stat_changed == 1) {
+          $nb_clycle_tot_cmd->event($nb_clycle_tot);
+          $nb_clycle_z1_cmd->event($nb_clycle_z1);
+        }
 
         //$session_husqvarna->logOut();
     }
@@ -716,7 +782,7 @@ class husqvarna_map extends eqLogic {
     // Envoi d'une commande au robot
     public function mower_command($mower_id, $command, $last_login) {
       
-      log::add('husqvarna_map','info',"Commande executé: ".$mower_id." => ".$command);
+      log::add('husqvarna_map','debug',"Commande executée: ".$mower_id." => ".$command);
 
       // Parametre de duree pour les commandes Start et Park
       $duration = 20*60;   // 20*60 mn => TODO : ajouter un curseur dans le widget pour ajuster cette valeur
@@ -735,7 +801,7 @@ class husqvarna_map extends eqLogic {
         }
         log::add('husqvarna_map','info',"Pas de session en cours ou Session expirée => New login");
       }
-      log::add('husqvarna_map','info',"Commande:".$command." / mower_id:".$mower_id." / duration:".$duration);
+      log::add('husqvarna_map','debug',"Commande:".$command." / mower_id:".$mower_id." / duration:".$duration);
       $ret = $session_husqvarna->control($mower_id, $command, $duration);
       if ($ret["info"]["http_code"] == "202")
         log::add('husqvarna_map','info',"Commande:".$command." traitée");

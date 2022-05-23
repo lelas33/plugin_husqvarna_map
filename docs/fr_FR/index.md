@@ -74,12 +74,14 @@ Le fichier image obtenu doit être placé dans le dossier "ressources" du plugin
 Il y a 2 fonctions supplémentaires offerte par la planification du plugin par rapport à la planification intégrée au robot: - La gestion de 2 zones de fonctionnement du robot (voir la description de cette fonction plus bas), et le couplage au plugin "vigilence météo / prévision dans l'heure" pour suspendre la tonte lors de période pluie. (voir également plus bas le détail sur cette fonction)
 * Si la fonction "Planification par zones" est utilisée, cocher la case "Gestion de 2 zones", et définissez en utilisant le sélecteur de commandes, les 2 commandes jeedom pour activer chaque zone.
 Définissez ensuite le pourcentage de cycle de tonte à réaliser dans la zone 1, le pourcentage de la zone 2 sera bien sur le complément à 100%. (ces ratios sont à priori en rapport avec la surface relative de chaque zone)
-* Si l'**option météo** est utilisée, il aut alors renseigner les commandes dans la section "Utilisation de la météo". 
+* Si l'**option météo** est utilisée, il faut alors renseigner les commandes dans les sections "Prévision de pluie" et/ou "Mesure de pluie par pluviomètre". 
 Pour cela, il faut avoir au préalable installé le plugin "Météo France".
 En utilisant le sélecteur de commande, indiquer les 2 liens "Pluie 1h - Pluie prévue dans l heure" et "Pluie 1h - Niveau Pluie 0-5mn".
+Et en option il est possible d'utiliser également la mesure de pluie faite par un pluviomètre. De la même façon, renseigner le lien vers la mesure "pluie 1 heure".
+
 * Renseigner ensuite la section "Calendrier de fonctionnement".
 Il est possible de définir 2 plages horaires par jour, pour chaque jour de la semaine.
-(La zone "Initialisation plage horaire 1 ou 2" permet de remplir plus rapidement les informations hebdomadaires en recopiant une même défition sur chaque jour de la semaine).
+(La zone "Initialisation plage horaire A ou B" permet de remplir plus rapidement les informations hebdomadaires en recopiant une même défition sur chaque jour de la semaine).
 Pour chaque plage horaire, on peux associer une zone de tonte, avec un chiffre entre 1 et 3:
   * 1: Zone de tonte 1, associée à la commande d'activation zone 1
   * 2: Zone de tonte 2, associée à la commande d'activation zone 2
@@ -89,20 +91,34 @@ Pour chaque plage horaire, on peux associer une zone de tonte, avec un chiffre e
   <img src="../images/installation_2.png" width="600" title="Configuration Planification">
 </p>
 
-**Détails sur la planification: gestion de 2 zones de fonctionnement**
+**Détails sur la planification: gestion de 2 zones de fonctionnement.**
 Les 2 zones de fonctionnement sont un artifice d'installation du robot husqvarna pour améliorer ses possibilités, qui consiste à passer 2 jeux de câbles (câbles périphérique et câble guide) et de commuter par relai ces 2 jeux de câbles entre 2 départ du robot depuis sa base.
 En pratique, cela permet de gérer l'équivalent de 2 câbles guides pour un modèle de robot qui n'en a qu'un seul.<br>
 Voir des explications plus détaillées sur le forum "automower-fans":<br>
-http://automower-fans.les-forums.com/topic/5750/tutoriel-installation-2-zones-alternees/
+https://www.automower-fans.com/viewtopic.php?p=60898#p60898
 
 Les commandes jeedom à définir sur la page de configuration permettent de sélectionner le relai sur une zone ou sur l'autre, en activant le relai On ou Off.
 La zone 1 est considérée par le plugin comme la zone ou le relai est Off, car elle est activée lorsque le robot est à sa base. (cela économise un peu de courant)
 
-**Détails sur la planification: option météo**
-Le couplage de la planification avec le plugin Météo France permet de suspendre le fonctionnement du robot si de la pluie est prévue dans l'heure qui suit, selon les 2 principes suivants:<br>
-Pour rappel, le plugin météo / prévision dans l'heure fourni une probabilité de pluie entre 1 et 4 par tranche de 5 mn, dans l'heure qui vient. (1: pas de pluie à 4:pluie forte)
-* Si le robot est à sa base et que la quantité de pluie dans l'heure qui vient est supérieure à 18, le robot suspend le cycle de tonte. (12 correspond à aucune pluie prévue dans l'heure)
-* Si le robot est dans un cycle de tonte et que la quantité de pluie dans les 15 mn qui suivent est supérieure à 6, le robot rentre à sa base. (3 correspond à aucune pluie prévue dans les 15 mn)
+**Détails sur la planification: option météo.**
+Le couplage de la planification avec le plugin Météo France permet de suspendre le fonctionnement du robot si de la pluie est prévue dans l'heure qui suit.<br>
+Il est possible d'utiliser également en option un pluviomètre pour compléter l'information.<br>
+Pour rappel, le plugin météo / prévision dans l'heure fournit une probabilité de pluie entre 1 et 4, par tranche de 5 ou 10 mn, dans l'heure qui vient. (1: pas de pluie à 4:pluie forte, et il y a 9 tranches au total: 6 x 5mn suivies de 3 x 10mn)<br>
+L'information pluie dans l'heure est donc un nombre entre 9 (Aucune pluie prévue dans l'heure) et 36 (Pluie maximum prévue sur chaque plage)<br>
+L'information pluie dans les 15 mn est donc un nombre entre 3 (Aucune pluie prévue dans les 15 mn) et 12 (Pluie maximum prévue sur 15 mn)<br>
+L'option météo fonctionne selon les 3 principes suivants:
+
+**Utilisation de la prévision de pluie:** Si l'option Météo est activée et que les 4 configurations associées sont définies.
+* Si le robot est à sa base et que la quantité de pluie prévue dans l'heure qui vient est supérieure à 15, le robot suspend le cycle de tonte.<br>(9 correspond à aucune pluie prévue dans l'heure)
+* Si le robot est dans un cycle de tonte et que la quantité de pluie prévue dans les 15 mn qui suivent est supérieure à 6, le robot rentre à sa base.<br>(3 correspond à aucune pluie prévue dans les 15 mn)
+<br>
+
+**Utilisation de la mesure de pluie par pluviomètre:** si l'option Météo est activée et que les 2 configurations associées sont définies.
+* Si le robot est à sa base et que la mesure de pluie dans l'heure passée est supérieure à 0.5 mm, le robot suspend le cycle de tonte.
+* Si le robot est dans un cycle de tonte et que la mesure de pluie dans l'heure passée est supérieure à 0.5 mm, le robot rentre à sa base.
+
+Les seuils indiqués (15, 6 et 0,5 mm) sont ajustables dans sur la page de configuration de l'équipement.
+<br>
 
 **Remarque sur la planification:**
 La planification du plugin est complémentaire à celle intégrée dans le robot.

@@ -283,7 +283,7 @@ class husqvarna_map_api_amc {
   // Login pour l'API: authentification
   function amc_api_login()
   {
-    $form = "grant_type=password&client_id=".$this->client_id."&username=".$this->username."&password=".$this->password;
+    $form = "grant_type=password&client_id=".$this->client_id."&username=".urlencode($this->username)."&password=".urlencode($this->password);
     $param = "oauth2/token";
     $ret = $this->post_api_amc_auth2($param, $form);
     // var_dump($ret["info"]);

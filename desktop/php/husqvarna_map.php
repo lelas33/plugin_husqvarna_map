@@ -187,9 +187,9 @@ sendVarToJS('eqType', 'husqvarna_map');
                               <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="zone1_ratio" placeholder="50%"/>
                             </div>
                         </div>
-                        <legend>{{Utilisation de la météo}}</legend>
+                        <legend>{{Prévision de pluie (plugin Météo France)}}</legend>
                         <div class="form-group">
-                          <label class="col-sm-3 control-label" >{{Pluie prévue dans l'heure}}</label>
+                          <label class="col-sm-3 control-label" >{{Prévision: Pluie prévue dans l'heure}}</label>
                           <div class="col-sm-4">
                             <div class="input-group">
                               <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="info_pluie_1h"/>
@@ -198,9 +198,14 @@ sendVarToJS('eqType', 'husqvarna_map');
                               </span>
                             </div>
                           </div>
+                          <label class="col-md-1 control-label" >{{Seuil:}}</label>
+                          <div class="col-md-1">
+                            <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="thi_pluie_1h" />
+                          </div>
+                          <label class="col-lg-3">{{Par exemple: 15}}</label>
                         </div>
                         <div class="form-group">
-                          <label class="col-sm-3 control-label" >{{Prévision à 0-5 mn}}</label>
+                          <label class="col-sm-3 control-label" >{{Prévision: Prévision à 0-5 mn}}</label>
                           <div class="col-sm-4">
                             <div class="input-group">
                               <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="info_pluie_5mn"/>
@@ -209,15 +214,37 @@ sendVarToJS('eqType', 'husqvarna_map');
                               </span>
                             </div>
                           </div>
+                          <label class="col-md-1 control-label" >{{Seuil:}}</label>
+                          <div class="col-md-1">
+                            <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="thi_pluie_5mn" />
+                          </div>
+                          <label class="col-lg-3">{{Par exemple: 6}}</label>
+                        </div>
+                        <legend>{{Mesure de pluie par pluviomètre}}</legend>
+                        <div class="form-group">
+                          <label class="col-sm-3 control-label" >{{Mesure: Pluie depuis 1 heure}}</label>
+                          <div class="col-sm-4">
+                            <div class="input-group">
+                              <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="mesure_pluie_1h"/>
+                              <span class="input-group-btn">
+                                <a class="btn btn-default listCmdInfoNumeric roundedRight"><i class="fas fa-list-alt"></i></a>
+                              </span>
+                            </div>
+                          </div>
+                          <label class="col-md-1 control-label" >{{Seuil:}}</label>
+                          <div class="col-md-1">
+                            <input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="thm_pluie_1h" />
+                          </div>
+                          <label class="col-lg-3">{{Par exemple: 0.5}}</label>
                         </div>
                         <legend>{{Calendrier de fonctionnement}}</legend>
                         <div class="form-group" style="text-align:center">
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-md-4 form-control">
-                              <label class="control-label" style="min-width:80px">{{Plage horaire 1}}</label>
+                              <label class="control-label" style="min-width:80px">{{Plage horaire A}}</label>
                             </div>
                             <div class="col-md-4 form-control">
-                              <label class="control-label" style="min-width:80px">{{Plage horaire 2}}</label>
+                              <label class="control-label" style="min-width:80px">{{Plage horaire B}}</label>
                             </div>
                         </div>
                         <div class="form-group" style="text-align:center">
@@ -409,7 +436,7 @@ sendVarToJS('eqType', 'husqvarna_map');
                         <div class="form-group" style="text-align:center">
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-md-4 form-control">
-                              <label class="control-label" style="min-width:80px">{{Initialisation plage horaire 1 ou 2}}</label>
+                              <label class="control-label" style="min-width:80px">{{Initialisation plage horaire A ou B}}</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -427,8 +454,8 @@ sendVarToJS('eqType', 'husqvarna_map');
                               <a style="margin-left:5px;" class="btn btn-info btn-sm tooltips" id='bt_init_zn_p'>{{+}}</a>
                             </div>
                             <div class="col-md-4">
-                               <input type="radio" id="rb_init1" name="plage_init" value="1" checked><label for="rb_init1">&nbspPlage 1</label>
-                               <input type="radio" id="rb_init2" name="plage_init" value="2"><label for="rb_init2">&nbspPlage 2 &nbsp&nbsp=></label>
+                               <input type="radio" id="rb_init1" name="plage_init" value="1" checked><label for="rb_init1">&nbspPlage A</label>
+                               <input type="radio" id="rb_init2" name="plage_init" value="2"><label for="rb_init2">&nbspPlage B &nbsp&nbsp=></label>
                               <a style="margin-right:5px;" class="btn btn-info btn-sm tooltips" id='bt_init'>{{Init.}}</a>
                             </div>
                         </div>
