@@ -32,7 +32,7 @@ Par source Github:
 * Sur la page de configuration du plugin:
   * Activer le plugin
   * Saisissez vos identifiant de compte Husqvarna.
-  * Saisissez votre code "Application key" (voir ci dessous pour l'obtenir). Puis Sauvegarder
+  * Saisissez vos codes "Application key" & "Application secret" (voir ci dessous pour les obtenir). Puis Sauvegarder
   * Cochez la case :"Afficher le panneau desktop". Cela donne accès à la page du "panel" de l'équipement. Puis Sauvegarder
 
 ## Obtention d'un code "application key"

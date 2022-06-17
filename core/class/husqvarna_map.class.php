@@ -46,10 +46,10 @@ class husqvarna_map extends eqLogic {
     public static function force_detect_mowers() {
       // Initialisation de la connexion
       log::add('husqvarna_map','info','force_detect_mowers');
-      if (config::byKey('account', 'husqvarna_map') != "" && config::byKey('password', 'husqvarna_map') != "" && config::byKey('application_key', 'husqvarna_map') != "" ) {
+      if (config::byKey('account', 'husqvarna_map') != "" && config::byKey('password', 'husqvarna_map') != "" && config::byKey('application_key', 'husqvarna_map') != "" && config::byKey('application_secret', 'husqvarna_map') != "") {
         // Init API Husqvarana
         $session_husqvarna = new husqvarna_map_api_amc();
-        $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), NULL);
+        $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), config::byKey('application_secret', 'husqvarna_map'), NULL);
         // Login a l'API Husqvarana
         $login = $session_husqvarna->amc_api_login();
         if ($login["status"] == "OK") {
@@ -119,14 +119,15 @@ class husqvarna_map extends eqLogic {
                       "meteo_en"           => array('Météo cmd',              'action','other',    "",   0, 0, "GENERIC_ACTION", 'husqvarna_map::on_off', 'husqvarna_map::on_off', ''),
                       "meteo_activ"        => array('Météo',                  'info',  'binary',   "",   0, 0, "GENERIC_INFO",   'core::alert', 'core::alert', ''),
                       "lastLocations"      => array('Position GPS',           'info',  'string',   "",   0, 0, "GENERIC_INFO",   'husqvarna_map::maps_husqvarna', 'husqvarna_map::maps_husqvarna', ''),
-                      "gps_posx"           => array('GPS position X',         'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "gps_posy"           => array('GPS position Y',         'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line', 'core::line', ''),
-                      "stat_tps_running"   => array("Temps fonctionnement",   'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
-                      "stat_tps_cutting"   => array("Temps tonte",            'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
-                      "stat_tps_charging"  => array("Temps chargement",       'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
-                      "stat_tps_searching" => array("Temps recherche",        'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
-                      "stat_nb_collision"  => array("Nombre collisions",      'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', ''),
-                      "stat_nb_charging"   => array("Nombre cycle charge",    'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile', 'core::tile', '')
+                      "gps_posx"           => array('GPS position X',         'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line',  'core::line',  ''),
+                      "gps_posy"           => array('GPS position Y',         'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line',  'core::line',  ''),
+                      "info_zones"         => array('Zone en cours',          'info',  'numeric',  "",   0, 0, "GENERIC_INFO",   'core::line',  'core::line',  ''),
+                      "stat_tps_running"   => array("Temps fonctionnement",   'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  ''),
+                      "stat_tps_cutting"   => array("Temps tonte",            'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  ''),
+                      "stat_tps_charging"  => array("Temps chargement",       'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  ''),
+                      "stat_tps_searching" => array("Temps recherche",        'info',  'numeric', "h",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  ''),
+                      "stat_nb_collision"  => array("Nombre collisions",      'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  ''),
+                      "stat_nb_charging"   => array("Nombre cycle charge",    'info',  'numeric',  "",   0, 1, "GENERIC_INFO",   'core::tile',  'core::tile',  '')
         );
     }
 
@@ -212,7 +213,7 @@ class husqvarna_map extends eqLogic {
     // =====================================================
     public static function pull($rfh = false) {
         // log::add('husqvarna_map','debug','Funcion pull');
-        if ( config::byKey('account', 'husqvarna_map') != "" && config::byKey('password', 'husqvarna_map') != "" && config::byKey('application_key', 'husqvarna_map') != "" ) {
+        if ( config::byKey('account', 'husqvarna_map') != "" && config::byKey('password', 'husqvarna_map') != "" && config::byKey('application_key', 'husqvarna_map') != ""  && config::byKey('application_secret', 'husqvarna_map') != "") {
             foreach (self::byType('husqvarna_map') as $eqLogic) {
               if ($eqLogic->getIsEnable())
                 $eqLogic->scan($rfh);
@@ -267,7 +268,7 @@ class husqvarna_map extends eqLogic {
           if ((!isset($last_login)) || ($last_login == "") || ($rfh == 1))
             $last_login = NULL;
           $session_husqvarna = new husqvarna_map_api_amc();
-          $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), $last_login);
+          $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), config::byKey('application_secret', 'husqvarna_map'), $last_login);
           
           if ($last_login == NULL) {
             $login = $session_husqvarna->amc_api_login();   // Authentification
@@ -340,10 +341,9 @@ class husqvarna_map extends eqLogic {
           
           // Next start date => Time conversion
           $cmd = $this->getCmd(null, "nextStartTS");
-          $next_start_ts = $mower_ret["planner"]->nextStartTimestamp;
+          $next_start_ts = $mower_ret["planner"]->nextStartTimestamp / 1000;
           $offsetTimeStamp = date("Z");
-          $localTimeStamp = date('d M Y H:i', (intval($next_start_ts)/1000) - $offsetTimeStamp );
-          // $localTimeStamp = date('d M Y H:i', intval($next_start_ts)/1000);
+          $localTimeStamp = date('d M Y H:i', $next_start_ts - $offsetTimeStamp );
           if (intval($next_start_ts) == 0)
             $cmd->event("--");
           else
@@ -426,15 +426,17 @@ class husqvarna_map extends eqLogic {
               log::add('husqvarna_map','debug',"Historique GPS:New      GPS=".$gps_log_full);
               // enregistrement des nouveaux points dans le fichier de log
               // .. state encoding for compatibility with previous log format
-              if (($mower_state == ST_IN_OPERATION) && ($mower_activity != AC_PARKED_IN_CS)) {
-                $mw_state = STS_UNKNOWN;
-                if     ($mower_activity == AC_LEAVING)    $mw_state = OK_LEAVING;
-                elseif ($mower_activity == AC_MOWING)     $mw_state = OK_CUTTING;
-                elseif ($mower_activity == AC_GOING_HOME) $mw_state = OK_SEARCHING;
-                elseif ($mower_activity == AC_CHARGING)   $mw_state = OK_CHARGING;
-                elseif (($mower_state == ST_ERROR) || ($mower_state == ST_FATAL_ERROR) || ($mower_state == ST_ERROR_AT_POWER_UP)) $mw_state = ERROR;
+              $mw_state = STS_UNKNOWN;
+              if     ($mower_activity == AC_LEAVING)    $mw_state = OK_LEAVING;
+              elseif ($mower_activity == AC_MOWING)     $mw_state = OK_CUTTING;
+              elseif ($mower_activity == AC_GOING_HOME) $mw_state = OK_SEARCHING;
+              elseif ($mower_activity == AC_CHARGING)   $mw_state = OK_CHARGING;
+              elseif (($mower_state == ST_ERROR) || ($mower_state == ST_FATAL_ERROR) || ($mower_state == ST_ERROR_AT_POWER_UP)) $mw_state = ERROR;
+              if (($mw_state == ERROR) || (($mower_state == ST_IN_OPERATION) && ($mower_activity != AC_PARKED_IN_CS))) {
                 $ts_now = time();
                 $log_fn = dirname(__FILE__).MOWER_LOG_FILE;
+                if ($mw_state == ERROR)
+                  $found_idx = 1; // no detailled history in case of error
                 for ($idx = 0; $idx < $found_idx; $idx++) {
                   $gps_lat = floatval($mower_ret["positions"][$found_idx-1-$idx]->{"latitude"});
                   $gps_lon = floatval($mower_ret["positions"][$found_idx-1-$idx]->{"longitude"});
@@ -508,6 +510,7 @@ class husqvarna_map extends eqLogic {
         $multizone = $this->getConfiguration("enable_2_areas");
         $pl_prev_meteo = 0;
         $pl_mesu_meteo = 0;
+        $info_zones_cmd = $this->getCmd(null, "info_zones");
         if ($pl_meteo == 1) {
           // recuperation des infos pour l'utilisation de la prevision meteo: pluie dans les 15mn et dans l'heure
           $cmd_name = str_replace('#', '', $this->getConfiguration('info_pluie_5mn'));
@@ -627,6 +630,7 @@ class husqvarna_map extends eqLogic {
                   // Sélection de la zone choisie
                   if ($multizone == 1) {
                     $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
+                    $info_zones_cmd->event($zone);
                   }
                   // départ tondeuse sur plage horaire A
                   $this->mower_command($mower_id, CMD_START, $last_login);
@@ -646,6 +650,7 @@ class husqvarna_map extends eqLogic {
                   // Sélection de la zone choisie
                   if ($multizone == 1) {
                     $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
+                    $info_zones_cmd->event($zone);
                   }
                   // départ tondeuse sur plage horaire B
                   $this->mower_command($mower_id, CMD_START, $last_login);
@@ -655,6 +660,9 @@ class husqvarna_map extends eqLogic {
                     $nb_clycle_z1 += 1;
                   }
                   $stat_changed = 1;
+                }
+                else {
+                  $info_zones_cmd->event(0);  // Si attente, alors info_zones = 0
                 }
                 break;
             case MDPLN_ACT1_T: // Robot en action sur la plage horaire A (phase tonte)
@@ -676,7 +684,8 @@ class husqvarna_map extends eqLogic {
                   $mode_changed = 1;
                   if ($multizone == 1) {
                     $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
-                  }
+                    $info_zones_cmd->event(0);
+                 }
                   log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire A.");
                 }
                 break;
@@ -692,6 +701,7 @@ class husqvarna_map extends eqLogic {
                   $mode_changed = 1;
                   if ($multizone == 1) {
                     $zone = $this->set_zone($pl1_zn, $nb_clycle_tot, $nb_clycle_z1);
+                    $info_zones_cmd->event($zone);
                   }
                   log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire A (zone: ".$zone.")");
                   $nb_clycle_tot += 1;
@@ -699,6 +709,9 @@ class husqvarna_map extends eqLogic {
                     $nb_clycle_z1 += 1;
                   }
                   $stat_changed = 1;
+                }
+                else {
+                  $info_zones_cmd->event(0);  // Si battery en charge, alors info_zones = 0
                 }
                 break;
             case MDPLN_ACT2_T: // Robot en action sur la plage horaire B (phase tonte)
@@ -720,6 +733,7 @@ class husqvarna_map extends eqLogic {
                   $mode_changed = 1;
                   if ($multizone == 1) {
                     $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
+                    $info_zones_cmd->event(0);
                   }
                   log::add('husqvarna_map','info',"Phase de chargement sur la plage horaire B.");
                 }
@@ -736,6 +750,7 @@ class husqvarna_map extends eqLogic {
                   $mode_changed = 1;
                   if ($multizone == 1) {
                     $zone = $this->set_zone($pl2_zn, $nb_clycle_tot, $nb_clycle_z1);
+                    $info_zones_cmd->event($zone);
                   }
                   log::add('husqvarna_map','info',"Prochain départ de tonte de la plage horaire B (zone: ".$zone.")");
                   $nb_clycle_tot += 1;
@@ -744,6 +759,9 @@ class husqvarna_map extends eqLogic {
                   }
                   $stat_changed = 1;
                 }
+                else {
+                  $info_zones_cmd->event(0);  // Si battery en charge, alors info_zones = 0
+                }
                 break;
             case MDPLN_WPARKED: // Attente retour base
                 if ($mower_activity == AC_PARKED_IN_CS) {
@@ -751,10 +769,11 @@ class husqvarna_map extends eqLogic {
                   $mode_changed = 1;
                   if ($multizone == 1) {
                     $this->set_zone(1, 0, 0);  // Mise au repot du sélecteur de zone
+                    $info_zones_cmd->event(0);
                   }
                   log::add('husqvarna_map','info',"Robot rentré à la base. (Activity=".$mower_activity.")");
                 }
-                elseif (($minute %10) == 0) { // Rappel de la commande toutes les 10 ms
+                elseif (($minute %10) == 0) { // Rappel de la commande toutes les 10 mn
                   // Park de la tondeuse
                   $this->mower_command($mower_id, CMD_PARKUNTILFURTHERNOTICE, $last_login);
                   log::add('husqvarna_map','info',"Rappel retour à la base");
@@ -791,7 +810,7 @@ class husqvarna_map extends eqLogic {
       if ((!isset($last_login)) || ($last_login == ""))
         $last_login = NULL;
       $session_husqvarna = new husqvarna_map_api_amc();
-      $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), $last_login);
+      $session_husqvarna->login(config::byKey('account', 'husqvarna_map'), config::byKey('password', 'husqvarna_map'), config::byKey('application_key', 'husqvarna_map'), config::byKey('application_secret', 'husqvarna_map'), $last_login);
       
       if (($last_login == NULL) || ($session_husqvarna->state_login() == 0)) {
         $login = $session_husqvarna->amc_api_login();   // Authentification

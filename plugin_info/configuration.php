@@ -42,5 +42,12 @@ if (!isConnect('admin')) {
         </div>
         <a href="https://developer.husqvarnagroup.cloud/" target="_blank">A obtenir sur le site "Husqvarna developer Portal"</a>
     </div>
+    <div class="form-group">
+        <label class="col-lg-4 control-label">{{Application secret}}</label>
+        <div class="col-lg-3">
+            <input class="configKey form-control" data-l1key="application_secret"/>
+        </div>
+        <a href="https://developer.husqvarnagroup.cloud/" target="_blank">A obtenir sur le site "Husqvarna developer Portal"</a>
+    </div>
 </form>
 <?php include_file('desktop', 'husqvarna_map', 'js', 'husqvarna_map'); ?>

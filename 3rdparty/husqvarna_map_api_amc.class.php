@@ -67,7 +67,8 @@ class husqvarna_map_api_amc {
 	protected $url_api_amc      = 'https://api.amc.husqvarna.dev/v1/';
 	protected $username;        // Account name
 	protected $password;        // Account password
-  protected $client_id;       // Application Key (to obtain on https://developer.husqvarnagroup.cloud/)
+  protected $client_id;       // Application Key    (to obtain on https://developer.husqvarnagroup.cloud/)
+  protected $client_sec;      // Application Secret (to obtain on https://developer.husqvarnagroup.cloud/)
   protected $access_token = [];
 
   // For APP API (Statistics)
@@ -212,11 +213,12 @@ class husqvarna_map_api_amc {
   // ==============================
   // General function : login
   // ==============================
-  function login($username, $password, $app_key, $token)
+  function login($username, $password, $app_key, $app_sec, $token)
 	{
     $this->username     = $username;
     $this->password     = $password;
     $this->client_id    = $app_key;
+    $this->client_sec   = $app_sec;
     $this->access_token = $token;  // Etat des token des appels précédents
     $this->debug_api    = false;
 	}
@@ -283,7 +285,7 @@ class husqvarna_map_api_amc {
   // Login pour l'API: authentification
   function amc_api_login()
   {
-    $form = "grant_type=password&client_id=".$this->client_id."&username=".urlencode($this->username)."&password=".urlencode($this->password);
+    $form = "grant_type=client_credentials&client_id=".$this->client_id."&client_secret=".$this->client_sec;
     $param = "oauth2/token";
     $ret = $this->post_api_amc_auth2($param, $form);
     // var_dump($ret["info"]);
@@ -377,12 +379,13 @@ class husqvarna_map_api_amc {
 	function list_robots()
 	{
     $res = $this->get_api_amc("mowers");
-		$list_robot = $res["result"];
-
+    if ($this->debug_api) {
+      var_dump($res["result"]);
+    }
 		$list_robot = [];
     $list_robot["status"] = "KO";
     $num_mower = 0;
-    if (count($res["result"]) >= 1) {
+    if (count($res["result"]->data) >= 1) {
       foreach ($res["result"]->data as $num => $data) {
         if ($data->type == "mower") {
           // First element is a mower => extract its informations

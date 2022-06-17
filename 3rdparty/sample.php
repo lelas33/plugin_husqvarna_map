@@ -4,9 +4,10 @@ require_once("husqvarna_map_api_amc.class.php");
 $account = "xx.yy@zz.fr";
 $passwd  = "xx";
 $app_key = "xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx";
+$app_sec = "xxxxxxxx-yyyy-zzzz-yyyy-xxxxxxxxxxxx";
 
 $session_husqvarna = new husqvarna_map_api_amc();
-$session_husqvarna->login($account, $passwd, $app_key, NULL);
+$session_husqvarna->login($account, $passwd, $app_key, $app_sec, NULL);
 
 
 // Login pour l'API AMC: authentification
@@ -14,6 +15,8 @@ $session_husqvarna->login($account, $passwd, $app_key, NULL);
 $login = $session_husqvarna->amc_api_login();
 var_dump($login);
 print("\n");
+
+// $session_husqvarna->set_debug_api();
 
 // check login state
 $sl = $session_husqvarna->state_login();
